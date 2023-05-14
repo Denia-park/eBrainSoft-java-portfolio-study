@@ -16,6 +16,10 @@
    - Restful API를 통한 Client/Server 분리
    - [SpringBoot, Vue.js, MyBatis, MySQL, NginX]
 
+## ERD (erdCloud 사용)
+- 완성되면 업로드 예정
+- [링크](https://www.erdcloud.com/d/3z7DMGmnur8NzHqGE)
+
 # Docker를 통한 MySQL 서버 띄우기
 - docker up [MySQL]
 >`docker-compose up -d`
