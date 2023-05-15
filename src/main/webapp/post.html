@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <title>자유 게시판</title>
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+        <!-- 공통 CSS -->
+        <link href="style.css" rel="stylesheet">
+
+        <script>
+            $(document).ready(function () {
+                const fileTarget = $('.file-upload .upload-hidden');
+
+                fileTarget.on('change', function () {  // 값이 변경되면
+                    let filename;
+
+                    if (window.FileReader) {  // modern browser
+                        filename = $(this)[0].files[0].name;
+                    }
+
+                    // 추출한 파일명 삽입
+                    $(this).siblings('.upload-name').val(filename);
+                });
+            });
+
+            /** 게시판 - 목록 페이지 이동 */
+            function goBoardList() {
+                location.href = "/board/boardList";
+            }
+
+            /** 게시판 - 작성  */
+            function insertBoard() {
+
+                var boardSubject = $("#board_subject").val();
+                var boardContent = $("#board_content").val();
+
+                if (boardSubject == "") {
+                    alert("제목을 입력해주세요.");
+                    $("#board_subject").focus();
+                    return;
+                }
+
+                if (boardContent == "") {
+                    alert("내용을 입력해주세요.");
+                    $("#board_content").focus();
+                    return;
+                }
+
+                var yn = confirm("게시글을 등록하시겠습니까?");
+                if (yn) {
+
+                    $.ajax({
+
+                        url: "/board/insertBoard",
+                        data: $("#boardForm").serialize(),
+                        dataType: "JSON",
+                        cache: false,
+                        async: true,
+                        type: "POST",
+                        success: function (obj) {
+                            insertBoardCallback(obj);
+                        },
+                        error: function (xhr, status, error) {
+                        }
+
+                    });
+                }
+            }
+
+            /** 게시판 - 작성 콜백 함수 */
+            function insertBoardCallback(obj) {
+
+                if (obj != null) {
+
+                    var result = obj.result;
+
+                    if (result == "SUCCESS") {
+                        alert("게시글 등록을 성공하였습니다.");
+                        goBoardList();
+                    } else {
+                        alert("게시글 등록을 실패하였습니다.");
+                        return;
+                    }
+                }
+            }
+
+        </script>
+    </head>
+    <body>
+        <h2>게시글 작성</h2>
+        <div>
+            <div class="caption">
+                <span class="t_red">*</span> 표시는 필수입력 항목입니다.
+            </div>
+            <table class="post_table">
+                <tbody id="tbody">
+                <tr>
+                    <th scope="row">카테고리<span class="t_red">*</span></th>
+                    <td>
+                        <select class="tbox01" id="category" name="category">
+                            <option value="all">카테고리 선택</option>
+                            <option value="java">Java</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="database">DataBase</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">작성자<span class="t_red">*</span></th>
+                    <td><input class="tbox01" id="board_subject" name="board_subject" value=""/></td>
+                </tr>
+                <tr>
+                    <th scope="row">비밀번호<span class="t_red">*</span></th>
+                    <td><input class="tbox01" id="password_first" placeholder="비밀번호" value=""/>
+                        <input class="tbox01" id="password_second" placeholder="비밀번호 확인" value=""/></td>
+                </tr>
+                <tr>
+                    <th scope="row">제목<span class="t_red">*</span></th>
+                    <td><input class="tbox01" id="board_writer" name="board_writer" value=""/></td>
+                </tr>
+                <tr>
+                    <th scope="row">내용<span class="t_red">*</span></th>
+                    <td><textarea class="textarea01" id="board_content" name="board_content"></textarea></td>
+                </tr>
+                <tr>
+                    <th scope="row">파일첨부</th>
+                    <td>
+                        <div class="file-upload">
+                            <input class="upload-name" disabled="disabled" type="text" value="파일선택">
+
+                            <label for="ex_filename_1">파일 찾기</label>
+                            <input class="upload-hidden" id="ex_filename_1" type="file">
+                        </div>
+                        <div class="file-upload">
+                            <input class="upload-name" disabled="disabled" type="text" value="파일선택">
+
+                            <label for="ex_filename_2">파일 찾기</label>
+                            <input class="upload-hidden" id="ex_filename_2" type="file">
+                        </div>
+                        <div class="file-upload">
+                            <input class="upload-name" disabled="disabled" type="text" value="파일선택">
+
+                            <label for="ex_filename_3">파일 찾기</label>
+                            <input class="upload-hidden" id="ex_filename_3" type="file">
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="post_bot_button_box">
+            <button id="cancel_btn">취소</button>
+            <button id="save_btn">저장</button>
+        </div>
+    </body>
+</html>
