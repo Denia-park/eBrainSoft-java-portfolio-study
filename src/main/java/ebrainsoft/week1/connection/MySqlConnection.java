@@ -3,18 +3,15 @@ package ebrainsoft.week1.connection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-public class ConnectionTest {
-
+public class MySqlConnection {
     static final String DB_URL = "jdbc:mysql://localhost:3306/ebrainsoft_study";
     static final String USER = "ebsoft";
     static final String PASS = "ebsoft";
 
-    public Connection getConnection() throws Exception{
+    public static Connection getConnection() throws Exception {
 
         Connection conn = null;
-        Statement stmt = null;
 
         try {
             //STEP 2: Register JDBC driver
@@ -30,6 +27,4 @@ public class ConnectionTest {
 
         return conn;
     }
-
-
 }
