@@ -1,8 +1,51 @@
 <%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="java.util.List" %>
+<%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
+<%@ page import="java.sql.Connection" %>
+<%@ page import="java.sql.Statement" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page import="java.sql.SQLException" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="ebrainsoft.week1.model.Board" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     LocalDate today = LocalDate.now();
     LocalDate previousDate = today.minusYears(1);
+
+    try {
+        //목록 조회
+        Connection connection = MySqlConnection.getConnection();
+
+        String sql = "select * from board";
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        List<Board> boardList = new ArrayList<>();
+        while (resultSet.next()) {
+            boardList.add(new Board(
+                    resultSet.getLong("BOARD_ID"),
+                    resultSet.getString("CATEGORY"),
+                    resultSet.getObject("REG_DATETIME", LocalDate.class),
+                    resultSet.getObject("EDIT_DATETIME", LocalDate.class),
+                    resultSet.getInt("VIEWS"),
+                    resultSet.getString("WRITER"),
+                    resultSet.getString("PASSWORD"),
+                    resultSet.getString("TITLE"),
+                    resultSet.getString("CONTENT")
+            ));
+        }
+
+        pageContext.setAttribute("boardList", boardList);
+    } catch (Exception e) {
+        throw new RuntimeException(e);
+    }
+    //목록 뿌리기
+
+    //페이지 처리
+
+    //검색조건을 계속해서 유지해야함 -> 쿠키 사용
+
 %>
 <!doctype html>
 <html lang="en">
@@ -61,33 +104,17 @@
             </tr>
             </thead>
             <tbody class="table-group-divider">
-            <tr>
-                <th scope="row">Java</th>
-                <td>Java</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>Otto</td>
-                <td>Mark</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">JavaScript</th>
-                <td>JavaScript</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">DataBase</th>
-                <td>DataBase</td>
-                <td>DataBase</td>
-                <td>@twitter</td>
-                <td>@twitter</td>
-                <td>@twitter</td>
-                <td>@twitter</td>
-            </tr>
+            <c:forEach var="data" items="${boardList}">
+                <tr>
+                    <th scope="row">${data.category}</th>
+                    <td>file</td>
+                    <td>${data.title}</td>
+                    <td>${data.writer}</td>
+                    <td>${data.views}</td>
+                    <td>${data.regDate}</td>
+                    <td>${data.editDate}</td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
 
