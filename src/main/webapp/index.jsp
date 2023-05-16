@@ -99,8 +99,8 @@
             String regDate = regDatetime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
 
             String editDate = "-";
-            if (resultSet.getObject("EDIT_DATETIME", LocalDate.class) != null) {
-                LocalDateTime editDatetime = resultSet.getObject("EDIT_DATETIME", LocalDateTime.class);
+            LocalDateTime editDatetime = resultSet.getObject("EDIT_DATETIME", LocalDateTime.class);
+            if (editDatetime != null) {
                 editDate = editDatetime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
             }
 
