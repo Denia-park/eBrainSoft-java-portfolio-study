@@ -30,7 +30,7 @@
         }
         pageContext.setAttribute("categoryList", categoryList);
 
-        sql = "select * from board";
+        sql = "select * from board order by REG_DATETIME desc";
         resultSet = statement.executeQuery(sql);
         List<Board> boardList = new ArrayList<>();
         while (resultSet.next()) {
