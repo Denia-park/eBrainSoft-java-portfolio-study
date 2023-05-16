@@ -142,10 +142,10 @@
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
               rel="stylesheet">
         <script src="https://kit.fontawesome.com/1b3dd0a9c0.js" crossorigin="anonymous"></script>
-        <link href="../style.css" rel="stylesheet">
+        <link href="style.css" rel="stylesheet">
     </head>
     <body>
-        <h1>자유 게시판</h1>
+        <h1><a class="title_link" href="index.jsp">자유 게시판</a></h1>
 
         <form action="" class="filter" method="get">
             <div class="reg_date">

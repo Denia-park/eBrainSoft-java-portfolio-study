@@ -173,6 +173,10 @@ textarea.textarea01 {
     appearance: none;
 }
 
+.title_link {
+    color: black;
+    text-decoration: none;
+}
 
 #search_box {
     margin: 0px 10px;
