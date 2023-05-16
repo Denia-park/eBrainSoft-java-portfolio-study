@@ -108,13 +108,13 @@
         <table class="table table-hover text_align_center">
             <thead>
             <tr>
-                <th scope="col">카테고리</th>
-                <th scope="col"></th>
-                <th scope="col">제목</th>
-                <th scope="col">작성자</th>
-                <th scope="col">조회수</th>
-                <th scope="col">등록 일시</th>
-                <th scope="col">수정 일시</th>
+                <th style="width: 12%;" scope="col">카테고리</th>
+                <th style="width: 2%;" scope="col"></th>
+                <th style="width: 40%;" scope="col">제목</th>
+                <th style="width: 10%;" scope="col">작성자</th>
+                <th style="width: 10%;" scope="col">조회수</th>
+                <th style="width: 13%;" scope="col">등록 일시</th>
+                <th style="width: 13%;" scope="col">수정 일시</th>
             </tr>
             </thead>
             <tbody class="table-group-divider">
