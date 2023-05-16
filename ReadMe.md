@@ -1,5 +1,23 @@
 # eBrainSoft-java-portfolio-study
 
+<!-- TOC -->
+
+* [eBrainSoft-java-portfolio-study](#ebrainsoft-java-portfolio-study)
+    * [진행 과정](#진행-과정)
+    * [ERD (erdCloud 사용)](#erd-erdcloud-사용)
+    * [Docker를 통한 MySQL 서버 띄우기](#docker를-통한-mysql-서버-띄우기)
+    * [집중적으로 코드 리뷰 받을 부분 정리](#집중적으로-코드-리뷰-받을-부분-정리)
+        * [1주차](#1주차)
+    * [TO-Do List 1주차](#to-do-list-1주차)
+        * [목록 게시판](#목록-게시판)
+        * [보기 게시판](#보기-게시판)
+        * [비밀번호 확인 팝업](#비밀번호-확인-팝업)
+        * [등록 게시판](#등록-게시판)
+        * [수정 게시판](#수정-게시판)
+
+<!-- TOC -->
+---
+
 ## 진행 과정
 
 1. JSP 게시판 만들기
@@ -18,10 +36,31 @@
     - Restful API를 통한 Client/Server 분리
     - [SpringBoot, Vue.js, MyBatis, MySQL, NginX]
 
+---
+
 ## ERD (erdCloud 사용)
 
 - 완성되면 업로드 예정
 - [링크](https://www.erdcloud.com/d/3z7DMGmnur8NzHqGE)
+
+---
+
+## Docker를 통한 MySQL 서버 띄우기
+
+- docker up [MySQL] : `docker-compose up -d`
+
+---
+
+## 집중적으로 코드 리뷰 받을 부분 정리
+
+### 1주차
+
+- 프로젝트 파일 구성은 올바른가 ?
+- JSTL을 어디까지 사용하는게 좋은지?
+- JSP 파일의 내용은 어떻게 구성하는게 잘 구성하는 것인지 ?
+    - JSP로 코드 짤때 어디까지 JSP로 사용하고 어디까지는 Class 를 나눠서 기능을 나눠서 구현하는지 잘 모르겠다.
+
+---
 
 ## TO-Do List 1주차
 
@@ -78,8 +117,4 @@
         - [ ] 삭제 버튼 누르면 파일 삭제 -> 취소하는 경우 파일 삭제도 취소 안됨
 - [ ] 수정하면 수정일 적용하기
 
-# Docker를 통한 MySQL 서버 띄우기
-
-- docker up [MySQL]
-
-> `docker-compose up -d`
+---
