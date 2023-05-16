@@ -73,10 +73,17 @@ html {
 
 .detail_content_box {
     border: 1px solid black;
+    padding: 15px;
+    margin-bottom: 30px;
+}
+
+.detail_file_box {
+    margin-bottom: 30px;
 }
 
 .detail_reply_box {
     background-color: lightgray;
+    padding: 15px;
 }
 
 .caption {
@@ -178,6 +185,31 @@ textarea.textarea01 {
     text-decoration: none;
 }
 
+div.reply_input_box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+div.reply_input_box input {
+    height: 75px;
+    width: 93%;
+}
+
+div.reply_input_box button {
+    height: 75px;
+    width: 5%;
+}
+
+.detail_bot_button_box {
+    width: 20%;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 #search_box {
     margin: 0px 10px;
     width: 300px;
@@ -200,4 +232,8 @@ textarea.textarea01 {
 
 #reply_bot_line {
     border: 1px dotted black;
+}
+
+#detail_edit_date {
+    margin-left: 20px;
 }
