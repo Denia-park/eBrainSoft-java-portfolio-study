@@ -47,10 +47,14 @@
         }
 
         pageContext.setAttribute("boardList", boardList);
+
+        //전체 게시글 수 조회
+        int boardCount = boardList.size();
+        pageContext.setAttribute("boardCount", boardCount);
+
     } catch (Exception e) {
         throw new RuntimeException(e);
     }
-    //목록 뿌리기
 
     //페이지 처리
 
@@ -98,7 +102,7 @@
         </form>
 
         <div id="total_content_num">
-            총 10건
+            총 ${boardCount} 건
         </div>
 
         <table class="table table-hover text_align_center">
