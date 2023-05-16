@@ -8,11 +8,13 @@
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="ebrainsoft.week1.model.Board" %>
+<%@ page import="java.time.LocalDateTime" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     LocalDate today = LocalDate.now();
     LocalDate previousDate = today.minusYears(1);
+    final String CUSTOM_DATE_FORMAT = "yyyy.MM.dd HH:mm";
 
     try {
         //목록 조회
@@ -23,17 +25,25 @@
         ResultSet resultSet = statement.executeQuery(sql);
         List<Board> boardList = new ArrayList<>();
         while (resultSet.next()) {
-            boardList.add(new Board(
-                    resultSet.getLong("BOARD_ID"),
-                    resultSet.getString("CATEGORY"),
-                    resultSet.getObject("REG_DATETIME", LocalDate.class),
-                    resultSet.getObject("EDIT_DATETIME", LocalDate.class),
-                    resultSet.getInt("VIEWS"),
-                    resultSet.getString("WRITER"),
-                    resultSet.getString("PASSWORD"),
-                    resultSet.getString("TITLE"),
-                    resultSet.getString("CONTENT")
-            ));
+            String regDate = resultSet.getObject("REG_DATETIME", LocalDateTime.class).format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
+            String editDate = "-";
+            if (resultSet.getObject("EDIT_DATETIME", LocalDate.class) != null) {
+                editDate = resultSet.getObject("EDIT_DATETIME", LocalDateTime.class).format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
+            }
+            String fileIcon = null;
+
+            boardList.add(Board.builder().
+                    boardId(resultSet.getLong("BOARD_ID")).
+                    category(resultSet.getString("CATEGORY")).
+                    regDate(regDate).
+                    editDate(editDate).
+                    views(resultSet.getInt("VIEWS")).
+                    writer(resultSet.getString("WRITER")).
+                    password(resultSet.getString("PASSWORD")).
+                    title(resultSet.getString("TITLE")).
+                    content(resultSet.getString("CONTENT")).
+                    fileExist(resultSet.getBoolean("FILE_EXIST")).
+                    build());
         }
 
         pageContext.setAttribute("boardList", boardList);
