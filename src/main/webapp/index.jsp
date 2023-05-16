@@ -132,7 +132,14 @@
                 <tr>
                     <th scope="row">${data.category}</th>
                     <td>${data.fileExist ? "<i class='fa-solid fa-paperclip'></i>" : null}</td>
-                    <td>${data.title}</td>
+                    <c:choose>
+                        <c:when test="${data.title.length() > 80}">
+                            <td>${(data.title.substring(0,81))}...</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td>${data.title}</td>
+                        </c:otherwise>
+                    </c:choose>
                     <td>${data.writer}</td>
                     <td><fmt:formatNumber value="${data.views}" pattern="#,###"/></td>
                     <td>${data.regDate}</td>
