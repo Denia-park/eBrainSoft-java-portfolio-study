@@ -11,6 +11,7 @@
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     LocalDate today = LocalDate.now();
     LocalDate previousDate = today.minusYears(1);
@@ -125,7 +126,7 @@
                     <td>${data.fileExist ? "<i class='fa-solid fa-paperclip'></i>" : null}</td>
                     <td>${data.title}</td>
                     <td>${data.writer}</td>
-                    <td>${data.views}</td>
+                    <td><fmt:formatNumber value="${data.views}" pattern="#,###"/></td>
                     <td>${data.regDate}</td>
                     <td>${data.editDate}</td>
                 </tr>
