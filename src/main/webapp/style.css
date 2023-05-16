@@ -79,38 +79,10 @@ html {
     background-color: lightgray;
 }
 
-.post_table {
-    width: 100%;
-}
-
 .caption {
     font-size: 14px;
     font-weight: bold;
     margin: 10px;
-}
-
-#search_box {
-    margin: 0px 10px;
-    width: 300px;
-}
-
-#reg_date_text {
-    margin-right: 20px;
-}
-
-#total_content_num {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-#title_box_bot_line {
-    border: 1px solid black;
-    opacity: unset;
-}
-
-#reply_bot_line {
-    border: 1px dotted black;
 }
 
 .post_table {
@@ -119,6 +91,8 @@ html {
 
     border-collapse: collapse;
     border-top: 1px solid #c9c9c9;
+
+    width: 100%;
 }
 
 .post_table tbody th, .post_table tbody td {
@@ -197,4 +171,29 @@ textarea.textarea01 {
     -webkit-appearance: none; /* 네이티브 외형 감추기 */
     -moz-appearance: none;
     appearance: none;
+}
+
+
+#search_box {
+    margin: 0px 10px;
+    width: 300px;
+}
+
+#reg_date_text {
+    margin-right: 20px;
+}
+
+#total_content_num {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#title_box_bot_line {
+    border: 1px solid black;
+    opacity: unset;
+}
+
+#reply_bot_line {
+    border: 1px dotted black;
 }
