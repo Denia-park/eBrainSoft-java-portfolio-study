@@ -2,36 +2,100 @@
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page import="java.util.List" %>
 <%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
-<%@ page import="java.sql.Connection" %>
-<%@ page import="java.sql.Statement" %>
-<%@ page import="java.sql.ResultSet" %>
-<%@ page import="java.sql.SQLException" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="ebrainsoft.week1.model.Board" %>
 <%@ page import="java.time.LocalDateTime" %>
+<%@ page import="java.sql.*" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
-    LocalDate today = LocalDate.now();
-    LocalDate previousDate = today.minusYears(1);
     final String CUSTOM_DATE_FORMAT = "yyyy.MM.dd HH:mm";
+
+    //검색 조건 확인
+    String startDayParam = request.getParameter("reg_start_date");
+    String endDayParam = request.getParameter("reg_end_date");
+    String categoryParam = request.getParameter("category");
+    String searchTextParam = request.getParameter("searchText");
+    String startDayFilter;
+    String endDayFilter;
+    String categoryFilter = "all";
+    String searchTextFilter = "";
+
+    //검색 버튼을 누른 경우
+    if (startDayParam != null && endDayParam != null) {
+        request.getSession().setAttribute("reg_start_date", startDayParam);
+        request.getSession().setAttribute("reg_end_date", endDayParam);
+        request.getSession().setAttribute("category", categoryParam);
+        request.getSession().setAttribute("searchText", searchTextParam);
+        startDayFilter = startDayParam;
+        endDayFilter = endDayParam;
+        if (!categoryParam.equals("all")) {
+            categoryFilter = categoryParam;
+        }
+        if (!searchTextParam.isEmpty()) {
+            searchTextFilter = searchTextParam;
+        }
+    }
+    //검색 버튼 안누르고 조회하는 경우
+    else {
+        String tempStartDay = (String) request.getSession().getAttribute("reg_start_date");
+        String tempEndDay = (String) request.getSession().getAttribute("reg_end_date");
+        String tempCategory = (String) request.getSession().getAttribute("category");
+        String tempSearchText = (String) request.getSession().getAttribute("searchText");
+
+        //한번도 조회를 안 누른 경우 -> 새로 조회, 현재 날짜로 조회
+        if (tempStartDay == null || tempEndDay == null) {
+            startDayFilter = String.valueOf(LocalDate.now().minusYears(1));
+            endDayFilter = String.valueOf(LocalDate.now());
+        }
+        //이미 한번 조회를 해서 데이터가 들어가 있는 경우 -> Session에서 확인한다.
+        else {
+            startDayFilter = tempStartDay;
+            endDayFilter = tempEndDay;
+            if (!tempCategory.equals("all")) {
+                categoryFilter = tempCategory;
+            }
+            if (!tempSearchText.isEmpty()) {
+                searchTextFilter = tempSearchText;
+            }
+        }
+    }
+    pageContext.setAttribute("category", categoryFilter);
+    pageContext.setAttribute("searchText", searchTextFilter);
 
     try {
         //목록 조회
         Connection connection = MySqlConnection.getConnection();
         Statement statement = connection.createStatement();
 
+        List<String> categoryList = new ArrayList<>();
         String sql = "select * from category";
         ResultSet resultSet = statement.executeQuery(sql);
-        List<String> categoryList = new ArrayList<>();
         while (resultSet.next()) {
             categoryList.add(resultSet.getString("NAME"));
         }
         pageContext.setAttribute("categoryList", categoryList);
 
-        sql = "select * from board order by REG_DATETIME desc";
-        resultSet = statement.executeQuery(sql);
+        sql = "select * from board where REG_DATETIME between ? and ?";
+        if (!categoryFilter.equals("all")) {
+            sql += " and CATEGORY = '" + categoryFilter + "'";
+        }
+        if (!searchTextFilter.isEmpty()) {
+            sql += " and TITLE like '%" + searchTextFilter + "%'";
+            sql += " or WRITER like '%" + searchTextFilter + "%'";
+            sql += " or CONTENT like '%" + searchTextFilter + "%'";
+        }
+        sql += " order by REG_DATETIME desc";
+
+        PreparedStatement searchStatement = connection.prepareStatement(sql);
+        //시간 추가 -> 해야지만 검색이 가능함
+        searchStatement.setString(1, startDayFilter + " 00:00:00");
+        searchStatement.setString(2, endDayFilter + " 23:59:59");
+        resultSet = searchStatement.executeQuery();
+
+        System.out.println(searchStatement);
+
         List<Board> boardList = new ArrayList<>();
         while (resultSet.next()) {
             String regDate = resultSet.getObject("REG_DATETIME", LocalDateTime.class).format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
@@ -39,7 +103,6 @@
             if (resultSet.getObject("EDIT_DATETIME", LocalDate.class) != null) {
                 editDate = resultSet.getObject("EDIT_DATETIME", LocalDateTime.class).format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
             }
-            String fileIcon = null;
 
             boardList.add(Board.builder().
                     boardId(resultSet.getLong("BOARD_ID")).
@@ -67,8 +130,6 @@
 
     //페이지 처리
 
-    //검색조건을 계속해서 유지해야함 -> 쿠키 사용
-
 %>
 <!doctype html>
 <html lang="en">
@@ -92,20 +153,24 @@
                     등록일
                 </span>
                 <input class="filter_height text_align_center" id="reg_start_date" name="reg_start_date" type="date"
-                       value=<%=previousDate%>>
+                       value=<%=startDayFilter%>>
                 -
                 <input class="filter_height text_align_center" id="reg_end_date" name="reg_end_date" type="date"
-                       value=<%=today%>>
+                       value=<%=endDayFilter%>>
             </div>
             <div class="search">
                 <select class="filter_height" id="category" name="category">
                     <option value="all">전체 카테고리</option>
                     <c:forEach var="data" items="${categoryList}">
-                        <option value="${data.toLowerCase()}">${data}</option>
+                        <option
+                                <c:if test='${category.equals(data)}'>selected</c:if>
+                                value="${data}">${data}
+                        </option>
                     </c:forEach>
                 </select>
-                <input class="filter_height" id="search_box" name="search" placeholder="검색어를 입력해주세요. (제목 + 작성자 + 내용)"
-                       type="text">
+                <input class="filter_height" id="search_box" name="searchText"
+                       placeholder="검색어를 입력해주세요. (제목 + 작성자 + 내용)"
+                       type="text" value="${searchText}">
                 <button class="button filter_height" type="submit">검색
                 </button>
             </div>
