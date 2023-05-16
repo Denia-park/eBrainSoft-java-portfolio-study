@@ -20,10 +20,18 @@
     try {
         //목록 조회
         Connection connection = MySqlConnection.getConnection();
-
-        String sql = "select * from board";
         Statement statement = connection.createStatement();
+
+        String sql = "select * from category";
         ResultSet resultSet = statement.executeQuery(sql);
+        List<String> categoryList = new ArrayList<>();
+        while (resultSet.next()) {
+            categoryList.add(resultSet.getString("NAME"));
+        }
+        pageContext.setAttribute("categoryList", categoryList);
+
+        sql = "select * from board";
+        resultSet = statement.executeQuery(sql);
         List<Board> boardList = new ArrayList<>();
         while (resultSet.next()) {
             String regDate = resultSet.getObject("REG_DATETIME", LocalDateTime.class).format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
@@ -92,9 +100,9 @@
             <div class="search">
                 <select class="filter_height" id="category" name="category">
                     <option value="all">전체 카테고리</option>
-                    <option value="java">Java</option>
-                    <option value="javascript">JavaScript</option>
-                    <option value="database">DataBase</option>
+                    <c:forEach var="data" items="${categoryList}">
+                        <option value="${data.toLowerCase()}">${data}</option>
+                    </c:forEach>
                 </select>
                 <input class="filter_height" id="search_box" name="search" placeholder="검색어를 입력해주세요. (제목 + 작성자 + 내용)"
                        type="text">
