@@ -10,8 +10,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
-    final String CUSTOM_DATE_FORMAT = "yyyy.MM.dd HH:mm";
-
     //검색 조건 확인
     String startDayParam = request.getParameter("reg_start_date");
     String endDayParam = request.getParameter("reg_end_date");
@@ -23,7 +21,7 @@
     String searchTextFilter = "";
 
     //검색 버튼을 누른 경우
-    if (startDayParam != null && endDayParam != null) {
+    if (startDayParam != null && endDayParam != null && categoryParam != null && searchTextParam != null) {
         request.getSession().setAttribute("reg_start_date", startDayParam);
         request.getSession().setAttribute("reg_end_date", endDayParam);
         request.getSession().setAttribute("category", categoryParam);
@@ -44,8 +42,8 @@
         String tempCategory = (String) request.getSession().getAttribute("category");
         String tempSearchText = (String) request.getSession().getAttribute("searchText");
 
-        //한번도 조회를 안 누른 경우 -> 새로 조회, 현재 날짜로 조회
-        if (tempStartDay == null || tempEndDay == null) {
+        //한번도 검색을 안 누른 경우 -> 새로 조회, 현재 날짜로 조회
+        if (tempStartDay == null || tempEndDay == null || tempCategory == null || tempSearchText == null) {
             startDayFilter = String.valueOf(LocalDate.now().minusYears(1));
             endDayFilter = String.valueOf(LocalDate.now());
         }
@@ -61,8 +59,6 @@
             }
         }
     }
-    pageContext.setAttribute("category", categoryFilter);
-    pageContext.setAttribute("searchText", searchTextFilter);
 
     try {
         //목록 조회
@@ -75,7 +71,6 @@
         while (resultSet.next()) {
             categoryList.add(resultSet.getString("NAME"));
         }
-        pageContext.setAttribute("categoryList", categoryList);
 
         sql = "select * from board where REG_DATETIME between ? and ?";
         if (!categoryFilter.equals("all")) {
@@ -96,32 +91,41 @@
 
         System.out.println(searchStatement);
 
+        final String CUSTOM_DATE_FORMAT = "yyyy.MM.dd HH:mm";
+
         List<Board> boardList = new ArrayList<>();
         while (resultSet.next()) {
-            String regDate = resultSet.getObject("REG_DATETIME", LocalDateTime.class).format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
+            LocalDateTime regDatetime = resultSet.getObject("REG_DATETIME", LocalDateTime.class);
+            String regDate = regDatetime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
+
             String editDate = "-";
             if (resultSet.getObject("EDIT_DATETIME", LocalDate.class) != null) {
-                editDate = resultSet.getObject("EDIT_DATETIME", LocalDateTime.class).format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
+                LocalDateTime editDatetime = resultSet.getObject("EDIT_DATETIME", LocalDateTime.class);
+                editDate = editDatetime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
             }
 
-            boardList.add(Board.builder().
-                    boardId(resultSet.getLong("BOARD_ID")).
-                    category(resultSet.getString("CATEGORY")).
-                    regDate(regDate).
-                    editDate(editDate).
-                    views(resultSet.getInt("VIEWS")).
-                    writer(resultSet.getString("WRITER")).
-                    password(resultSet.getString("PASSWORD")).
-                    title(resultSet.getString("TITLE")).
-                    content(resultSet.getString("CONTENT")).
-                    fileExist(resultSet.getBoolean("FILE_EXIST")).
-                    build());
+            boardList.add(
+                    Board.builder().
+                            boardId(resultSet.getLong("BOARD_ID")).
+                            category(resultSet.getString("CATEGORY")).
+                            regDate(regDate).
+                            editDate(editDate).
+                            views(resultSet.getInt("VIEWS")).
+                            writer(resultSet.getString("WRITER")).
+                            password(resultSet.getString("PASSWORD")).
+                            title(resultSet.getString("TITLE")).
+                            content(resultSet.getString("CONTENT")).
+                            fileExist(resultSet.getBoolean("FILE_EXIST")).
+                            build());
         }
-
-        pageContext.setAttribute("boardList", boardList);
 
         //전체 게시글 수 조회
         int boardCount = boardList.size();
+
+        pageContext.setAttribute("category", categoryFilter);
+        pageContext.setAttribute("searchText", searchTextFilter);
+        pageContext.setAttribute("categoryList", categoryList);
+        pageContext.setAttribute("boardList", boardList);
         pageContext.setAttribute("boardCount", boardCount);
 
     } catch (Exception e) {
@@ -129,7 +133,6 @@
     }
 
     //페이지 처리
-
 %>
 <!doctype html>
 <html lang="en">
