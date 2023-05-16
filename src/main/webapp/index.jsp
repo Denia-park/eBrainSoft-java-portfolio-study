@@ -71,6 +71,7 @@
               href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
               rel="stylesheet">
+        <script src="https://kit.fontawesome.com/1b3dd0a9c0.js" crossorigin="anonymous"></script>
         <link href="../style.css" rel="stylesheet">
     </head>
     <body>
@@ -121,7 +122,7 @@
             <c:forEach var="data" items="${boardList}">
                 <tr>
                     <th scope="row">${data.category}</th>
-                    <td>file</td>
+                    <td>${data.fileExist ? "<i class='fa-solid fa-paperclip'></i>" : null}</td>
                     <td>${data.title}</td>
                     <td>${data.writer}</td>
                     <td>${data.views}</td>

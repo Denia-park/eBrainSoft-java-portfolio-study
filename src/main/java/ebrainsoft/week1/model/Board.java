@@ -17,4 +17,5 @@ public class Board {
     String password;
     String title;
     String content;
+    Boolean fileExist;
 }
