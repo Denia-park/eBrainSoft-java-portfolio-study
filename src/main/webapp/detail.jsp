@@ -189,7 +189,7 @@
                     <span>비밀번호가 틀렸습니다.</span>
                 </div>
 
-                <div class="post_bot_button_box">
+                <div class="popup_bot_button_box">
                     <button id="cancel_btn" onclick="closePopup()">취소</button>
                     <button class="check_btn"
                             <c:if test="${!type.equals('edit')}">style="display: none"</c:if>

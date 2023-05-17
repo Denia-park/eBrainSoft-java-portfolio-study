@@ -225,28 +225,40 @@ form.comment_input_box button {
     color: whitesmoke;
 }
 
-.post_bot_button_box {
+.popup_bot_button_box {
     width: 60%;
     margin: 0 auto;
     display: flex;
     justify-content: center;
 }
 
-.post_bot_button_box button {
-    border: 1px solid;
+.popup_bot_button_box button {
+    border: none;
     height: 30px;
     width: 90px;
-
     margin: 10px auto;
 }
 
-.post_bot_button_box button#cancel_btn {
+.post_bot_button_box button {
+    border: none;
+    height: 30px;
+    width: 90px;
+}
+
+.post_bot_button_box {
+    margin-top: 30px;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.post_bot_button_box button#cancel_btn, .popup_bot_button_box button#cancel_btn {
     background-color: lightgray;
     color: black;
     border: none;
 }
 
-.post_bot_button_box button.check_btn {
+.post_bot_button_box button.check_btn, .popup_bot_button_box button.check_btn {
     background-color: black;
     color: whitesmoke;
 }
