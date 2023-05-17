@@ -225,6 +225,33 @@ form.comment_input_box button {
     color: whitesmoke;
 }
 
+.post_bot_button_box {
+    width: 60%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.post_bot_button_box button {
+    border: 1px solid;
+    height: 30px;
+    width: 90px;
+
+    margin: 10px auto;
+}
+
+.post_bot_button_box button#cancel_btn {
+    background-color: lightgray;
+    color: black;
+    border: none;
+}
+
+.post_bot_button_box button#save_btn {
+    background-color: black;
+    color: whitesmoke;
+}
+
+
 #search_box {
     margin: 0px 10px;
     width: 300px;
@@ -251,4 +278,31 @@ form.comment_input_box button {
 
 #detail_edit_date {
     margin-left: 20px;
+}
+
+#layer_bg {
+    position: absolute; /* 시작 지점을 버튼 위, 0픽셀부터 시작하려고 주는 것*/
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#popup {
+    position: absolute;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 15px;
+    width: 400px;
+    height: 150px;
+    background: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 7px 7px 5px rgba(0, 0, 0, 0.2); /*x y 번짐 색상*/
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }

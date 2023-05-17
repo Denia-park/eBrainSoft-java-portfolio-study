@@ -163,8 +163,58 @@
         <div class="detail_bot_button_box">
             <button id="list_btn" onclick="location.href='index.jsp'">목록</button>
             <button id="edit_btn">수정</button>
-            <button id="delete_btn">삭제</button>
+            <button id="delete_btn" onclick="openPopup('delete')">삭제</button>
         </div>
+
+        <div id="layer_bg" <c:if test="${empty status}">style="display: none"</c:if>>
+            <div id="popup">
+                <div>
+                    <table class="post_table">
+                        <tbody id="tbody">
+                        <tr>
+                            <th scope="row">비밀번호<span class="t_red">*</span></th>
+                            <td><input class="tbox01" id="password" placeholder="비밀번호" value=""/></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="
+                <c:if test="${empty status}">display: none;</c:if>
+                        text-align: center; color: red">
+                    <span>비밀번호가 틀렸습니다.</span>
+                </div>
+
+                <div class="post_bot_button_box">
+                    <button id="cancel_btn" onclick="closePopup()">취소</button>
+                    <button id="save_btn" onclick="doAction()">확인</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="password_check_form">
+
+        </div>
+
+        <script>
+            let actionFlag;
+
+            function openPopup(action) {
+                $('#layer_bg').show();
+                actionFlag = action;
+            }
+
+            function closePopup() {
+                $('#layer_bg').hide();
+            }
+
+            function doAction() {
+                if (actionFlag === 'edit') {
+                    location.href = "doEditAction.jsp?id=" + ${board.boardId} +"&pw=" + $('#password').val();
+                } else if (actionFlag === 'delete') {
+                    location.href = "doDeleteAction.jsp?id=" + ${board.boardId} +"&pw=" + $('#password').val();
+                }
+            }
+        </script>
 
         <script crossorigin="anonymous"
                 integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
