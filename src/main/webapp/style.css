@@ -214,6 +214,17 @@ form.comment_input_box button {
     justify-content: space-between;
 }
 
+.detail_bot_button_box button {
+    border: 1px solid;
+    height: 30px;
+    width: 90px;
+}
+
+.detail_bot_button_box #list_btn {
+    background-color: black;
+    color: whitesmoke;
+}
+
 #search_box {
     margin: 0px 10px;
     width: 300px;
