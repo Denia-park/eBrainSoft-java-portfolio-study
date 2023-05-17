@@ -118,12 +118,13 @@
             <div class="comment">
                 <div id="reg_date">2020.03.09 16:32</div>
                 <div id="content">댓글이 출력됩니다.</div>
-                <hr id="reply_bot_line">
+                <hr id="comment_bot_line">
             </div>
-            <div class="reply_input_box">
-                <input id="input_box" placeholder="댓글을 입력해주세요" type="text">
-                <button id="submit_btn">등록</button>
-            </div>
+            <form action="postCommentAction.jsp?id=${board.boardId}" method="post"
+                  class="comment_input_box">
+                <input id="input_box" name="content" placeholder="댓글을 입력해주세요" type="text">
+                <button type="submit" id="submit_btn">등록</button>
+            </form>
         </div>
 
         <hr id="comment_box_bot_line"/>
