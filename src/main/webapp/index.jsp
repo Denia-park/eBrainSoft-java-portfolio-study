@@ -238,7 +238,7 @@
             </nav>
         </div>
 
-        <button class="button filter_height align_left" type="button">등록</button>
+        <button class="button filter_height align_left" type="button" onclick="location.href='post.jsp'">등록</button>
 
         <script crossorigin="anonymous"
                 integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
