@@ -161,7 +161,7 @@
         <hr id="comment_box_bot_line"/>
 
         <div class="detail_bot_button_box">
-            <button id="list_btn">목록</button>
+            <button id="list_btn" onclick="location.href='index.jsp'">목록</button>
             <button id="edit_btn">수정</button>
             <button id="delete_btn">삭제</button>
         </div>
