@@ -14,6 +14,17 @@
         String content = request.getParameter("content");
         String password = request.getParameter("password");
 
+        String regex = "[a-zA-Z0-9{}\\[\\]/?.,;:|()*~`!^\\-_+<>@#$%&='\"]{4,15}";
+        if (category.equals("all") ||
+                title.length() < 3 || 100 < title.length() ||
+                writer.length() < 3 || 4 < writer.length() ||
+                content.length() < 4 || 2000 < content.length() ||
+                !password.matches(regex)
+        ) {
+            response.sendRedirect("post.jsp?status=fail");
+            return;
+        }
+
         Connection connection = MySqlConnection.getConnection();
 
         String sql = "insert into board (CATEGORY, REG_DATETIME, VIEWS, WRITER, PASSWORD, TITLE,CONTENT, FILE_EXIST) values (?,?,?,?,?,?,?,?)";
@@ -33,7 +44,7 @@
         if (result > 0) {
             response.sendRedirect("index.jsp");
         } else {
-            response.sendRedirect("index.jsp?status=fail");
+            response.sendRedirect("post.jsp?status=fail");
         }
     } catch (Exception e) {
         e.printStackTrace();

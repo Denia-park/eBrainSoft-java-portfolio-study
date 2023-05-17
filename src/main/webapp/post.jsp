@@ -7,6 +7,9 @@
 <%@ page import="java.sql.Statement" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
+    String status = request.getParameter("status");
+    pageContext.setAttribute("status", status);
+
     //목록 조회
     Connection connection = MySqlConnection.getConnection();
     Statement statement = connection.createStatement();
@@ -114,6 +117,10 @@
                 // 추출한 파일명 삽입
                 $(this).siblings('.upload-name').val(filename);
             });
+
+            if ('${status}' === "fail") {
+                alert("게시글 등록을 실패하였습니다.");
+            }
         });
 
         /** 게시판 - 목록 페이지 이동 */
