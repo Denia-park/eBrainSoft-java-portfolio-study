@@ -7,6 +7,7 @@
     try {
         String boardId = request.getParameter("id");
         String userPassword = request.getParameter("pw");
+        String type = request.getParameter("type");
 
         Connection connection = MySqlConnection.getConnection();
 
@@ -19,19 +20,23 @@
             String dbPassword = resultSet.getString("PASSWORD");
 
             if (!dbPassword.equals(userPassword)) {
-                response.sendRedirect("detail.jsp?id=" + boardId + "&status=fail");
+                response.sendRedirect("detail.jsp?id=" + boardId + "&type=" + type + "&status=fail");
                 return;
             }
         }
 
-        sql = "delete from board where BOARD_ID = " + boardId;
+        if (type.equals("edit")) {
 
-        int result = statement.executeUpdate(sql);
+        } else if (type.equals("delete")) {
+            sql = "delete from board where BOARD_ID = " + boardId;
 
-        if (result > 0) {
-            response.sendRedirect("index.jsp");
-        } else {
-            response.sendRedirect("index.jsp?status=fail");
+            int result = statement.executeUpdate(sql);
+
+            if (result > 0) {
+                response.sendRedirect("index.jsp");
+            } else {
+                response.sendRedirect("index.jsp?status=fail");
+            }
         }
     } catch (Exception e) {
         e.printStackTrace();

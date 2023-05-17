@@ -246,7 +246,7 @@ form.comment_input_box button {
     border: none;
 }
 
-.post_bot_button_box button#save_btn {
+.post_bot_button_box button.check_btn {
     background-color: black;
     color: whitesmoke;
 }

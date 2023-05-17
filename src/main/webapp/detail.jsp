@@ -15,6 +15,10 @@
 <%
     //검색 조건 확인
     String boardId = request.getParameter("id");
+    String status = request.getParameter("status");
+    String type = request.getParameter("type");
+    pageContext.setAttribute("status", status);
+    pageContext.setAttribute("type", type);
 
     try {
         Connection connection = MySqlConnection.getConnection();
@@ -97,6 +101,7 @@
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
               rel="stylesheet">
         <link href="style.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     </head>
     <body>
         <div class="detail_info_box">
@@ -162,7 +167,7 @@
 
         <div class="detail_bot_button_box">
             <button id="list_btn" onclick="location.href='index.jsp'">목록</button>
-            <button id="edit_btn">수정</button>
+            <button id="edit_btn" onclick="openPopup('edit')">수정</button>
             <button id="delete_btn" onclick="openPopup('delete')">삭제</button>
         </div>
 
@@ -186,7 +191,14 @@
 
                 <div class="post_bot_button_box">
                     <button id="cancel_btn" onclick="closePopup()">취소</button>
-                    <button id="save_btn" onclick="doAction()">확인</button>
+                    <button class="check_btn"
+                            <c:if test="${!type.equals('edit')}">style="display: none"</c:if>
+                            id="check_edit_btn" onclick="doAction('edit')">확인
+                    </button>
+                    <button class="check_btn"
+                            <c:if test="${!type.equals('delete')}">style="display: none"</c:if>
+                            id="check_delete_btn" onclick="doAction('delete')">확인
+                    </button>
                 </div>
             </div>
         </div>
@@ -196,23 +208,25 @@
         </div>
 
         <script>
-            let actionFlag;
-
             function openPopup(action) {
                 $('#layer_bg').show();
-                actionFlag = action;
+                if (action === 'edit') {
+                    $('#check_edit_btn').show();
+                    $('#check_delete_btn').hide();
+                } else if (action === 'delete') {
+                    $('#check_edit_btn').hide();
+                    $('#check_delete_btn').show();
+                }
+
             }
 
             function closePopup() {
                 $('#layer_bg').hide();
             }
 
-            function doAction() {
-                if (actionFlag === 'edit') {
-                    location.href = "doEditAction.jsp?id=" + ${board.boardId} +"&pw=" + $('#password').val();
-                } else if (actionFlag === 'delete') {
-                    location.href = "doDeleteAction.jsp?id=" + ${board.boardId} +"&pw=" + $('#password').val();
-                }
+            function doAction(actionType) {
+                location.href = "doPasswordCheckAction.jsp?id=" + ${board.boardId} +
+                    "&pw=" + $('#password').val() + "&type=" + actionType;
             }
         </script>
 
