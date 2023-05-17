@@ -202,10 +202,11 @@
                     <td>${data.fileExist ? "<i class='fa-solid fa-paperclip'></i>" : null}</td>
                     <c:choose>
                         <c:when test="${data.title.length() > 80}">
-                            <td>${(data.title.substring(0,81))}...</td>
+                            <td><a class="title_link"
+                                   href="detail.jsp?id=${data.boardId}">${(data.title.substring(0,81))}...</a></td>
                         </c:when>
                         <c:otherwise>
-                            <td>${data.title}</td>
+                            <td><a class="title_link" href="detail.jsp?id=${data.boardId}">${data.title}</a></td>
                         </c:otherwise>
                     </c:choose>
                     <td>${data.writer}</td>
