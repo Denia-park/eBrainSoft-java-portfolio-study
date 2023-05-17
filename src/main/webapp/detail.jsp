@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page import="java.sql.PreparedStatement" %>
 <%@ page import="ebrainsoft.week1.model.Board" %>
@@ -9,6 +10,7 @@
 <%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
 <%@ page import="java.sql.Connection" %>
 <%@ page import="java.sql.Statement" %>
+<%@ page import="ebrainsoft.week1.model.Comment" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     //검색 조건 확인
@@ -48,8 +50,24 @@
                 fileExist(resultSet.getBoolean("FILE_EXIST")).
                 build();
 
+        sql = "select * from comment where BOARD_ID = " + boardId;
+
+        resultSet = statement.executeQuery(sql);
+
+        List<Comment> commentList = new ArrayList<>();
+        while (resultSet.next()) {
+            commentList.add(
+                    Comment.builder().
+                            replyId(resultSet.getLong("REPLY_ID")).
+                            boardId(resultSet.getLong("BOARD_ID")).
+                            content(resultSet.getString("CONTENT")).
+                            regDate(resultSet.getString("REG_DATETIME")).
+                            build()
+            );
+        }
 
         pageContext.setAttribute("board", findBoard);
+        pageContext.setAttribute("commentList", commentList);
 
     } catch (Exception e) {
         throw new RuntimeException(e);
@@ -116,9 +134,11 @@
         </div>
         <div class="detail_comment_box">
             <div class="comment">
-                <div id="reg_date">2020.03.09 16:32</div>
-                <div id="content">댓글이 출력됩니다.</div>
-                <hr id="comment_bot_line">
+                <c:forEach var="data" items="${commentList}">
+                    <div id="reg_date">${data.regDate}</div>
+                    <div id="content">${data.content}</div>
+                    <hr id="comment_bot_line">
+                </c:forEach>
             </div>
             <form action="postCommentAction.jsp?id=${board.boardId}" method="post"
                   class="comment_input_box">

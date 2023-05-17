@@ -86,6 +86,10 @@ html {
     padding: 15px;
 }
 
+.detail_comment_box #reg_date {
+    font-size: 12px
+}
+
 .caption {
     font-size: 14px;
     font-weight: bold;

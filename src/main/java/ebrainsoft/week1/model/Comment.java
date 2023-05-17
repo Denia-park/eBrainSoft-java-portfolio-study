@@ -1,15 +1,15 @@
 package ebrainsoft.week1.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
-
+@Builder
 @Getter
 @AllArgsConstructor
 public class Comment {
     Long replyId;
     Long boardId;
-    LocalDate regDate;
+    String regDate;
     String content;
 }
