@@ -17,8 +17,9 @@
     String boardId = request.getParameter("id");
 
     try {
-        //목록 조회
         Connection connection = MySqlConnection.getConnection();
+
+        //내용 조회
         Statement statement = connection.createStatement();
 
         String sql = "select * from board where BOARD_ID = " + boardId;
@@ -37,12 +38,15 @@
             editDate = editDatetime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
         }
 
+        //미리 조회수 1 올린다
+        int updateViews = resultSet.getInt("VIEWS") + 1;
+
         Board findBoard = Board.builder().
                 boardId(resultSet.getLong("BOARD_ID")).
                 category(resultSet.getString("CATEGORY")).
                 regDate(regDate).
                 editDate(editDate).
-                views(resultSet.getInt("VIEWS")).
+                views(updateViews).
                 writer(resultSet.getString("WRITER")).
                 password(resultSet.getString("PASSWORD")).
                 title(resultSet.getString("TITLE")).
@@ -65,6 +69,13 @@
                             build()
             );
         }
+
+        sql = "UPDATE board SET VIEWS =? where BOARD_ID = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setInt(1, updateViews);
+        preparedStatement.setLong(2, findBoard.getBoardId());
+        preparedStatement.executeUpdate();
 
         pageContext.setAttribute("board", findBoard);
         pageContext.setAttribute("commentList", commentList);
