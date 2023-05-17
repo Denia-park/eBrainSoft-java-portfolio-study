@@ -81,7 +81,7 @@ html {
     margin-bottom: 30px;
 }
 
-.detail_reply_box {
+.detail_comment_box {
     background-color: lightgray;
     padding: 15px;
 }
@@ -185,18 +185,18 @@ textarea.textarea01 {
     text-decoration: none;
 }
 
-div.reply_input_box {
+form.comment_input_box {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
-div.reply_input_box input {
+form.comment_input_box input {
     height: 75px;
     width: 93%;
 }
 
-div.reply_input_box button {
+form.comment_input_box button {
     height: 75px;
     width: 5%;
 }
@@ -230,7 +230,7 @@ div.reply_input_box button {
     opacity: unset;
 }
 
-#reply_bot_line {
+#comment_bot_line {
     border: 1px dotted black;
 }
 

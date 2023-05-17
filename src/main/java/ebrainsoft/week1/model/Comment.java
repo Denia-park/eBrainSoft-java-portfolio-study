@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
-public class Reply {
+public class Comment {
     Long replyId;
     Long boardId;
     LocalDate regDate;

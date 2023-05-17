@@ -114,8 +114,8 @@
                 <a href="http://">첨부파일1.hwp</a>
             </div>
         </div>
-        <div class="detail_reply_box">
-            <div class="reply">
+        <div class="detail_comment_box">
+            <div class="comment">
                 <div id="reg_date">2020.03.09 16:32</div>
                 <div id="content">댓글이 출력됩니다.</div>
                 <hr id="reply_bot_line">
@@ -126,7 +126,7 @@
             </div>
         </div>
 
-        <hr id="reply_box_bot_line"/>
+        <hr id="comment_box_bot_line"/>
 
         <div class="detail_bot_button_box">
             <button id="list_btn">목록</button>
