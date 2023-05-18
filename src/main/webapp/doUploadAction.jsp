@@ -12,6 +12,7 @@
 <%@ page import="java.io.File" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.security.MessageDigest" %>
 
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
@@ -62,7 +63,13 @@
         ps.setString(2, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")));
         ps.setString(3, "0");
         ps.setString(4, writer);
-        ps.setString(5, password);
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(password.getBytes());
+        StringBuffer sb = new StringBuffer();
+        for (byte b : md.digest()) {
+            sb.append(String.format("%02x", b));
+        }
+        ps.setString(5, sb.toString());
         ps.setString(6, title);
         ps.setString(7, content);
         ps.setBoolean(8, isFileExist);
@@ -91,7 +98,7 @@
             ps.setString(1, boardId);
             ps.setString(2, fileName);
             ps.setString(3, fileRealName);
-            ps.executeUpdate();
+            result = ps.executeUpdate();
         }
 
         if (result > 0) {

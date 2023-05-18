@@ -2,6 +2,7 @@
 <%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
 <%@ page import="java.sql.Connection" %>
 <%@ page import="java.sql.Statement" %>
+<%@ page import="java.security.MessageDigest" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     try {
@@ -19,7 +20,14 @@
         if (resultSet.next()) {
             String dbPassword = resultSet.getString("PASSWORD");
 
-            if (!dbPassword.equals(userPassword)) {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(userPassword.getBytes());
+            StringBuffer sb = new StringBuffer();
+            for (byte b : md.digest()) {
+                sb.append(String.format("%02x", b));
+            }
+
+            if (!dbPassword.contentEquals(sb)) {
                 response.sendRedirect("detail.jsp?id=" + boardId + "&type=" + type + "&status=fail");
                 return;
             }
