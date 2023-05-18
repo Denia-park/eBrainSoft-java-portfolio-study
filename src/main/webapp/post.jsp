@@ -74,19 +74,19 @@
                     <th scope="row">파일첨부</th>
                     <td>
                         <div class="file-upload">
-                            <input class="upload-name" disabled="disabled" type="text" value="파일선택">
+                            <input class="upload-name" disabled type="text" value="파일선택">
 
                             <label for="ex_filename_1">파일 찾기</label>
                             <input class="upload-hidden" id="ex_filename_1" type="file">
                         </div>
                         <div class="file-upload">
-                            <input class="upload-name" disabled="disabled" type="text" value="파일선택">
+                            <input class="upload-name" disabled type="text" value="파일선택">
 
                             <label for="ex_filename_2">파일 찾기</label>
                             <input class="upload-hidden" id="ex_filename_2" type="file">
                         </div>
                         <div class="file-upload">
-                            <input class="upload-name" disabled="disabled" type="text" value="파일선택">
+                            <input class="upload-name" disabled type="text" value="파일선택">
 
                             <label for="ex_filename_3">파일 찾기</label>
                             <input class="upload-hidden" id="ex_filename_3" type="file">
@@ -101,6 +101,7 @@
             <button id="cancel_btn" onclick="doCancel()">취소</button>
             <button class="check_btn" id="save_btn" onclick="doVerify()">저장</button>
         </div>
+
     </body>
 
     <script>
@@ -128,42 +129,6 @@
             location.href = "index.jsp";
         }
 
-        /** 게시판 - 작성  */
-        function insertBoard() {
-
-            var boardSubject = $("#board_subject").val();
-            var boardContent = $("#board_content").val();
-
-            if (boardSubject == "") {
-                alert("제목을 입력해주세요.");
-                $("#board_subject").focus();
-                return;
-            }
-
-            if (boardContent == "") {
-                alert("내용을 입력해주세요.");
-                $("#board_content").focus();
-                return;
-            }
-
-        }
-
-        /** 게시판 - 작성 콜백 함수 */
-        function insertBoardCallback(obj) {
-            if (obj != null) {
-
-                var result = obj.result;
-
-                if (result == "SUCCESS") {
-                    alert("게시글 등록을 성공하였습니다.");
-                    doCancel();
-                } else {
-                    alert("게시글 등록을 실패하였습니다.");
-                    return;
-                }
-            }
-        }
-
         function doVerify() {
             let category = $("#category").val();
             let writer = $("#board_writer").val();
@@ -171,6 +136,9 @@
             let passwordSecond = $("#password_second").val();
             let title = $("#board_subject").val();
             let content = $("#board_content").val();
+            let file1 = $("#ex_filename_1")[0].files[0];
+            let file2 = $("#ex_filename_2")[0].files[0];
+            let file3 = $("#ex_filename_3")[0].files[0];
 
             if (category === "all") {
                 alert("카테고리를 선택해주세요.");
@@ -203,44 +171,22 @@
                 $("#board_writer").focus();
                 return;
             }
-            let obj = {
-                "category": category,
-                "writer": writer,
-                "title": title,
-                "content": content,
-                "password": passwordFirst
-            }
 
-            sendPOST("doPostAction.jsp", obj)
-        }
-
-        // sendPOST("url","json 형태 파라미터" )
-        function sendPOST(action, params) {
-
-            let form = document.createElement('form');
-
-            form.setAttribute('method', 'post');
-
-            form.setAttribute('action', action);
-
-            document.charset = "utf-8";
-
-            for (let key in params) {
-
-                let hiddenField = document.createElement('input');
-
-                hiddenField.setAttribute('type', 'hidden');
-
-                hiddenField.setAttribute('name', key);
-
-                hiddenField.setAttribute("value", params[key]);
-
-                form.appendChild(hiddenField);
-            }
-
-            document.body.appendChild(form);
-
-            form.submit();
+            let formData = new FormData();
+            formData.set('enctype', 'multipart/form-data');
+            formData.append('category', category);
+            formData.append('writer', writer);
+            formData.append('title', title);
+            formData.append('content', content);
+            formData.append('password', passwordFirst);
+            formData.append('file1', file1);
+            formData.append('file2', file2);
+            formData.append('file3', file3);
+            
+            fetch('doUploadAction.jsp', {
+                method: 'POST',
+                body: formData
+            });
         }
     </script>
 </html>
