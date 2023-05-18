@@ -129,7 +129,7 @@
             location.href = "index.jsp";
         }
 
-        function doVerify() {
+        async function doVerify() {
             let category = $("#category").val();
             let writer = $("#board_writer").val();
             let passwordFirst = $("#password_first").val();
@@ -182,11 +182,15 @@
             formData.append('file1', file1);
             formData.append('file2', file2);
             formData.append('file3', file3);
-            
-            fetch('doUploadAction.jsp', {
+
+            const response = await fetch('doUploadAction.jsp', {
                 method: 'POST',
                 body: formData
             });
+
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
         }
     </script>
 </html>
