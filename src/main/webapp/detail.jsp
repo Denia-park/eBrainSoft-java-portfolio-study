@@ -11,6 +11,9 @@
 <%@ page import="java.sql.Connection" %>
 <%@ page import="java.sql.Statement" %>
 <%@ page import="ebrainsoft.week1.model.Comment" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     //검색 조건 확인
@@ -58,6 +61,15 @@
                 fileExist(resultSet.getBoolean("FILE_EXIST")).
                 build();
 
+        sql = "select * from file where BOARD_ID = " + boardId;
+
+        resultSet = statement.executeQuery(sql);
+        List<String[]> fileNameList = new ArrayList<>();
+        while (resultSet.next()) {
+            String fileRealName = URLEncoder.encode(resultSet.getString("FILE_REAL_NAME"), StandardCharsets.UTF_8);
+            fileNameList.add(new String[]{resultSet.getString("FILE_NAME"), fileRealName});
+        }
+
         sql = "select * from comment where BOARD_ID = " + boardId;
 
         resultSet = statement.executeQuery(sql);
@@ -81,6 +93,7 @@
         preparedStatement.setLong(2, findBoard.getBoardId());
         preparedStatement.executeUpdate();
 
+        pageContext.setAttribute("files", fileNameList);
         pageContext.setAttribute("board", findBoard);
         pageContext.setAttribute("commentList", commentList);
 
@@ -102,6 +115,7 @@
               rel="stylesheet">
         <link href="style.css" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+        <script src="https://kit.fontawesome.com/1b3dd0a9c0.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <div class="detail_info_box">
@@ -141,12 +155,12 @@
 
         </div>
         <div class="detail_file_box">
-            <div class="file">
-                <a href="http://">첨부파일1.hwp</a>
-            </div>
-            <div class="file">
-                <a href="http://">첨부파일1.hwp</a>
-            </div>
+            <c:forEach var="data" items="${files}">
+                <div class="file">
+                    <i class="fa-solid fa-download"></i> <a href="downloadAction.jsp?file=${data[1]}">${data[0]}</a>
+                </div>
+            </c:forEach>
+
         </div>
         <div class="detail_comment_box">
             <div class="comment">
