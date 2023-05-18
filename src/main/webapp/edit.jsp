@@ -10,11 +10,19 @@
 <%@ page import="ebrainsoft.week1.model.Board" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page import="java.time.LocalDateTime" %>
+<%@ page import="java.security.MessageDigest" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
-    //검색 조건 확인
     String boardId = request.getParameter("id");
+    String userPassword = request.getParameter("pw");
     String status = request.getParameter("status");
+
+    //pw 없이 그냥 주소로 접근하려는 경우를 막기 위해서 넣음
+    if (userPassword == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+
     pageContext.setAttribute("status", status);
 
     try {
@@ -27,6 +35,20 @@
 
         ResultSet resultSet = statement.executeQuery(sql);
         resultSet.next();
+
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(userPassword.getBytes());
+        StringBuffer sb = new StringBuffer();
+        for (byte b : md.digest()) {
+            sb.append(String.format("%02x", b));
+        }
+
+        String dbPassword = resultSet.getString("PASSWORD");
+
+        if (!dbPassword.contentEquals(sb)) {
+            response.sendRedirect("index.jsp");
+            return;
+        }
 
         final String CUSTOM_DATE_FORMAT = "yyyy.MM.dd HH:mm";
 

@@ -34,7 +34,7 @@
         }
 
         if (type.equals("edit")) {
-            response.sendRedirect("edit.jsp?id=" + boardId);
+            response.sendRedirect("edit.jsp?id=" + boardId + "&pw=" + userPassword);
         } else if (type.equals("delete")) {
             sql = "delete from board where BOARD_ID = " + boardId;
 
