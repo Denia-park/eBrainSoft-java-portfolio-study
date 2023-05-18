@@ -263,6 +263,19 @@ form.comment_input_box button {
     color: whitesmoke;
 }
 
+.edit_file_btn {
+    background-color: whitesmoke;
+    color: black;
+
+    border: 1px solid black;
+
+    margin: 10px 10px;
+}
+
+.edit_file_div {
+    margin: 10px 0;
+}
+
 
 #search_box {
     margin: 0px 10px;

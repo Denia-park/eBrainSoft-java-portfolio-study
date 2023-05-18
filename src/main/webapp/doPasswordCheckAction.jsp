@@ -17,6 +17,7 @@
 
         String sql = "select PASSWORD from board where BOARD_ID = " + boardId;
         ResultSet resultSet = statement.executeQuery(sql);
+
         if (resultSet.next()) {
             String dbPassword = resultSet.getString("PASSWORD");
 
@@ -27,14 +28,16 @@
                 sb.append(String.format("%02x", b));
             }
 
-            if (!dbPassword.contentEquals(sb)) {
+            userPassword = sb.toString();
+
+            if (!dbPassword.equals(userPassword)) {
                 response.sendRedirect("detail.jsp?id=" + boardId + "&type=" + type + "&status=fail");
                 return;
             }
         }
 
         if (type.equals("edit")) {
-            response.sendRedirect("edit.jsp?id=" + boardId + "&pw=" + userPassword);
+            response.sendRedirect("edit.jsp?id=" + boardId);
         } else if (type.equals("delete")) {
             sql = "delete from board where BOARD_ID = " + boardId;
 

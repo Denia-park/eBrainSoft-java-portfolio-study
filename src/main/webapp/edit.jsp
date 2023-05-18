@@ -11,17 +11,12 @@
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.security.MessageDigest" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     String boardId = request.getParameter("id");
-    String userPassword = request.getParameter("pw");
     String status = request.getParameter("status");
-
-    //pw 없이 그냥 주소로 접근하려는 경우를 막기 위해서 넣음
-    if (userPassword == null) {
-        response.sendRedirect("index.jsp");
-        return;
-    }
 
     pageContext.setAttribute("status", status);
 
@@ -35,20 +30,6 @@
 
         ResultSet resultSet = statement.executeQuery(sql);
         resultSet.next();
-
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(userPassword.getBytes());
-        StringBuffer sb = new StringBuffer();
-        for (byte b : md.digest()) {
-            sb.append(String.format("%02x", b));
-        }
-
-        String dbPassword = resultSet.getString("PASSWORD");
-
-        if (!dbPassword.contentEquals(sb)) {
-            response.sendRedirect("index.jsp");
-            return;
-        }
 
         final String CUSTOM_DATE_FORMAT = "yyyy.MM.dd HH:mm";
 
@@ -75,7 +56,24 @@
                 build();
 
         //파일 보여주기.
+        sql = "select * from file where BOARD_ID = " + boardId;
 
+        resultSet = statement.executeQuery(sql);
+        List<String[]> fileNameList = new ArrayList<>();
+        List<String> existFileNameList = new ArrayList<>();
+        while (resultSet.next()) {
+            String fileRealName = resultSet.getString("FILE_REAL_NAME");
+            String fileUrlName = URLEncoder.encode(fileRealName, StandardCharsets.UTF_8);
+            fileNameList.add(new String[]{resultSet.getString("FILE_NAME"), fileUrlName, fileRealName});
+            existFileNameList.add(fileRealName);
+        }
+
+        while (fileNameList.size() != 3) {
+            fileNameList.add(new String[]{null, null});
+        }
+
+        pageContext.setAttribute("existFileNameList", existFileNameList);
+        pageContext.setAttribute("files", fileNameList);
         pageContext.setAttribute("board", findBoard);
 
     } catch (Exception e) {
@@ -89,7 +87,9 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1" name="viewport">
         <title>자유 게시판</title>
+        <script src="urlsafe-base64.js"></script>
         <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+        <script src="https://kit.fontawesome.com/1b3dd0a9c0.js" crossorigin="anonymous"></script>
         <!-- 공통 CSS -->
         <link href="style.css" rel="stylesheet">
     </head>
@@ -123,7 +123,7 @@
                 </tr>
                 <tr>
                     <th scope="row">작성자<span class="t_red">*</span></th>
-                    <td><input class="tbox01" id="board_writer" name="board_subject" value="${board.writer}"/></td>
+                    <td><input class="tbox01" id="board_writer" name="board_writer" value="${board.writer}"/></td>
                 </tr>
                 <tr>
                     <th scope="row">비밀번호<span class="t_red">*</span></th>
@@ -131,7 +131,7 @@
                 </tr>
                 <tr>
                     <th scope="row">제목<span class="t_red">*</span></th>
-                    <td><input class="tbox01" id="board_subject" name="board_writer" value="${board.title}"/></td>
+                    <td><input class="tbox01" id="board_subject" name="board_subject" value="${board.title}"/></td>
                 </tr>
                 <tr>
                     <th scope="row">내용<span class="t_red">*</span></th>
@@ -141,24 +141,38 @@
                 <tr>
                     <th scope="row">파일첨부</th>
                     <td>
-                        <div class="file-upload">
-                            <input class="upload-name" disabled type="text" value="파일선택">
+                        <c:forEach var="data" items="${files}" varStatus="stat">
+                            <c:choose>
+                                <c:when test="${data[0] != null}">
+                                    <div class="file edit_file_div" id="edit_file_upload_${stat.index+1}">
+                                        <i class="fa-solid fa-download"></i> ${data[0]}
+                                        <button class="edit_file_btn"
+                                                onclick="location.href='downloadAction.jsp?file=${data[1]}'">
+                                            Download
+                                        </button>
+                                        <button class="edit_file_btn"
+                                                onclick="restoreFileUploadBtn(${stat.index+1},'${data[2]}')">
+                                            X
+                                        </button>
+                                    </div>
+                                    <div class="file-upload edit_file_div" id="edit_file_upload_hidden${stat.index+1}"
+                                         style="display:none;">
+                                        <input class="upload-name" disabled type="text" value="파일선택">
 
-                            <label for="ex_filename_1">파일 찾기</label>
-                            <input class="upload-hidden" id="ex_filename_1" type="file">
-                        </div>
-                        <div class="file-upload">
-                            <input class="upload-name" disabled type="text" value="파일선택">
+                                        <label for="ex_filename_${stat.index+1}">파일 찾기</label>
+                                        <input class="upload-hidden" id="ex_filename_${stat.index+1}" type="file">
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="file-upload edit_file_div">
+                                        <input class="upload-name" disabled type="text" value="파일선택">
 
-                            <label for="ex_filename_2">파일 찾기</label>
-                            <input class="upload-hidden" id="ex_filename_2" type="file">
-                        </div>
-                        <div class="file-upload">
-                            <input class="upload-name" disabled type="text" value="파일선택">
-
-                            <label for="ex_filename_3">파일 찾기</label>
-                            <input class="upload-hidden" id="ex_filename_3" type="file">
-                        </div>
+                                        <label for="ex_filename_${stat.index+1}">파일 찾기</label>
+                                        <input class="upload-hidden" id="ex_filename_${stat.index+1}" type="file">
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
                     </td>
                 </tr>
                 </tbody>
@@ -188,31 +202,37 @@
             });
 
             if ('${status}' === "fail") {
-                alert("게시글 등록을 실패하였습니다.");
+                alert("게시글 수정에 실패하였습니다.");
             }
         });
+
+        let deleteNameList = [];
+
+        function restoreFileUploadBtn(divIndex, deleteFileName) {
+            let fileHiddenTarget = $("#edit_file_upload_hidden" + divIndex);
+            fileHiddenTarget.show();
+            let fileTarget = $("#edit_file_upload_" + divIndex);
+            fileTarget.hide();
+
+            deleteNameList.push(deleteFileName);
+        }
 
         /** 게시판 - 목록 페이지 이동 */
         function doCancel() {
             location.href = "index.jsp";
         }
 
-        function doVerify() {
-            let category = $("#category").val();
+        async function doVerify() {
+
             let writer = $("#board_writer").val();
             let passwordFirst = $("#password_first").val();
-            let passwordSecond = $("#password_second").val();
             let title = $("#board_subject").val();
             let content = $("#board_content").val();
             let file1 = $("#ex_filename_1")[0].files[0];
             let file2 = $("#ex_filename_2")[0].files[0];
             let file3 = $("#ex_filename_3")[0].files[0];
 
-            if (category === "all") {
-                alert("카테고리를 선택해주세요.");
-                $("#category").focus();
-                return;
-            }
+
             if (writer.length < 3 || 4 < writer.length) {
                 alert("작성자는 3글자 이상, 5글자 미만입니다.");
                 $("#board_writer").focus();
@@ -222,11 +242,6 @@
             if (!regex.test(passwordFirst)) {
                 alert("비밀번호는 4글자 이상, 16글자 미만입니다.");
                 $("#password_first").focus();
-                return;
-            }
-            if (passwordFirst !== passwordSecond) {
-                alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-                $("#password_second").focus();
                 return;
             }
             if (title.length < 3 || 100 < title.length) {
@@ -242,19 +257,30 @@
 
             let formData = new FormData();
             formData.set('enctype', 'multipart/form-data');
-            formData.append('category', category);
             formData.append('writer', writer);
             formData.append('title', title);
             formData.append('content', content);
-            formData.append('password', passwordFirst);
             formData.append('file1', file1);
             formData.append('file2', file2);
             formData.append('file3', file3);
 
-            fetch('doUploadAction.jsp', {
-                method: 'POST',
-                body: formData
-            });
+            <c:forEach var="data" items="${existFileNameList}">
+            formData.append('existFileNameList', '${data}');
+            </c:forEach>
+
+            for (const name of deleteNameList) {
+                formData.append('deleteNameList', name);
+            }
+
+            const response = await fetch('doEditAction.jsp?id=' + '${board.boardId}' + '&pw=' + encode(btoa(passwordFirst)), {
+                    method: 'POST',
+                    body: formData
+                }
+            );
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
         }
     </script>
 </html>
+
