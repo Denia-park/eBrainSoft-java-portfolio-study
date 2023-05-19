@@ -1,5 +1,6 @@
 package ebrainsoft.week1.util;
 
+import com.oreilly.servlet.MultipartRequest;
 import ebrainsoft.week1.model.Board;
 import ebrainsoft.week1.model.BoardInfo;
 import ebrainsoft.week1.model.FilterCondition;
@@ -174,5 +175,26 @@ public class BoardUtil {
         String encryptedUserPassword = PostUtil.encryptPassword(userPassword, PostUtil.ALGORITHM_SHA_256);
 
         return dbPassword.equals(encryptedUserPassword);
+    }
+
+    public int queryEditBoard(Connection con, MultipartRequest mr, String boardId, boolean isFileExist) throws SQLException {
+        String writer = mr.getParameter("writer");
+        String title = mr.getParameter("title");
+        String content = mr.getParameter("content");
+
+        String sql = "update board set WRITER=?, EDIT_DATETIME=?, TITLE=?,CONTENT=?, FILE_EXIST=? where BOARD_ID = ?";
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setString(1, writer);
+        ps.setString(2, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")));
+        ps.setString(3, title);
+        ps.setString(4, content);
+        ps.setBoolean(5, isFileExist);
+        ps.setString(6, boardId);
+
+        int result = ps.executeUpdate();
+
+        ps.close();
+
+        return result;
     }
 }

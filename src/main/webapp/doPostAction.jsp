@@ -18,7 +18,7 @@
 
         Validator validator = new Validator();
 
-        if (!validator.isAllValid(multipartRequest)) {
+        if (!validator.isAllValidOnPost(multipartRequest)) {
             response.sendRedirect("post.jsp?status=fail");
             return;
         }
@@ -27,7 +27,7 @@
 
         PostUtil postUtil = new PostUtil();
 
-        int result = postUtil.post(con, multipartRequest);
+        int result = postUtil.queryPostBoard(con, multipartRequest);
 
         if (result < 0) {
             response.sendRedirect("post.jsp?status=fail");

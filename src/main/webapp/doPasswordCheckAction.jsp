@@ -14,6 +14,7 @@
         BoardUtil boardUtil = new BoardUtil();
         if (!boardUtil.verifyPassword(con, boardId, userPassword)) {
             response.sendRedirect("detail.jsp?id=" + boardId + "&type=" + type + "&status=fail");
+            return;
         }
 
         if (type.equals("edit")) {
