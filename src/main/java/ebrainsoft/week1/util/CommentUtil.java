@@ -2,10 +2,9 @@ package ebrainsoft.week1.util;
 
 import ebrainsoft.week1.model.Comment;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,5 +31,16 @@ public class CommentUtil {
         rs.close();
 
         return commentList;
+    }
+
+    public int queryPostComment(Connection con, String boardId, String content) throws SQLException {
+        String sql = "insert into comment (BOARD_ID, CONTENT ,REG_DATETIME) values (?,?,?)";
+
+        PreparedStatement st = con.prepareStatement(sql);
+        st.setString(1, boardId);
+        st.setString(2, content);
+        st.setString(3, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")));
+
+        return st.executeUpdate();
     }
 }
