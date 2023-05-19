@@ -35,7 +35,7 @@
             sql += " or CONTENT like '%" + searchTextFilter + "%')";
         }
 
-        String countSql = "select count(*) as cnt " + sql.substring(9);
+        String countSql = "select count(*) as cnt " + sql.substring(sql.indexOf("from"));
 
         PreparedStatement countStatement = con.prepareStatement(countSql);
         //시간 추가 -> 해야지만 검색이 가능함
