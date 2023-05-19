@@ -12,6 +12,7 @@ public class SearchUtil {
     private static final String REG_END_DATE = "reg_end_date";
     private static final String CATEGORY = "category";
     private static final String SEARCH_TEXT = "searchText";
+    private static final String PAGE = "page";
     private static final String CUR_PAGE = "curPage";
 
     private static final String ALL_CATEGORY_VALUE = "all";
@@ -71,7 +72,7 @@ public class SearchUtil {
     }
 
     private static Integer getNeedPageNum(HttpServletRequest request) {
-        String pageParam = request.getParameter("page");
+        String pageParam = request.getParameter(PAGE);
 
         if (pageParam != null) {
             return updateCurPage(pageParam);
@@ -81,7 +82,7 @@ public class SearchUtil {
     }
 
     private static Integer getSessionCurPage(HttpServletRequest request) {
-        Object tempPageParam = request.getSession().getAttribute("curPage");
+        Object tempPageParam = request.getSession().getAttribute(CUR_PAGE);
 
         if (tempPageParam != null) {
             return (Integer) tempPageParam;

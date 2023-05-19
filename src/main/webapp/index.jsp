@@ -13,45 +13,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
-    FilterCondition sfc = SearchUtil.updateFilterConditionIfSearchConditionExist(request);
-
-    String startDayFilter = sfc.getStartDayFilter();
-    String endDayFilter = sfc.getEndDayFilter();
-    String categoryFilter = sfc.getCategoryFilter();
-    String searchTextFilter = sfc.getSearchTextFilter();
+    FilterCondition fc = SearchUtil.updateFilterConditionIfSearchConditionExist(request);
 
     try {
         Connection con = MySqlConnection.getConnection();
+        BoardInfo boardInfo = new BoardInfo();
 
-        List<String> categoryList = MySqlConnection.getCategoryList(con);
-
-        int pageSizeLimit = 10;
-        BoardInfo boardInfo = MySqlConnection.getBoardInfo(con, sfc, pageSizeLimit);
-
-        List<Board> boardList = boardInfo.getBoardList();
-        int curPage = boardInfo.getNeedPageNum();
-        int totalPage = boardInfo.getTotalPage();
-        int totalCount = boardInfo.getTotalCount();
-
-        int prevPage = curPage == 1 ? 1 : curPage - 1;
-        int nextPage = curPage == totalPage ? totalPage : curPage + 1;
-
-        int div = (curPage - 1) / 5;
-        int pageLimitStart = 1 + (div * 5);
-        int pageLimitEnd = Math.min(pageLimitStart + 4, totalPage);
-
-        pageContext.setAttribute("category", categoryFilter);
-        pageContext.setAttribute("searchText", searchTextFilter);
-        pageContext.setAttribute("categoryList", categoryList);
-        pageContext.setAttribute("boardList", boardList);
-        pageContext.setAttribute("totalCount", totalCount);
-        pageContext.setAttribute("curPage", curPage);
-        request.getSession().setAttribute("curPage", curPage);
-        pageContext.setAttribute("totalPage", totalPage);
-        pageContext.setAttribute("prevPage", prevPage);
-        pageContext.setAttribute("nextPage", nextPage);
-        pageContext.setAttribute("pageLimitStart", pageLimitStart);
-        pageContext.setAttribute("pageLimitEnd", pageLimitEnd);
+        boardInfo.queryCategoryList(con);
+        boardInfo.queryBoardData(con, fc);
+        boardInfo.updateAllAttribute(pageContext, fc);
 
         con.close();
     } catch (Exception e) {
@@ -80,10 +50,10 @@
                     등록일
                 </span>
                 <input class="filter_height text_align_center" id="reg_start_date" name="reg_start_date" type="date"
-                       value=<%=startDayFilter%>>
+                       value=<%=fc.getStartDayFilter()%>>
                 -
                 <input class="filter_height text_align_center" id="reg_end_date" name="reg_end_date" type="date"
-                       value=<%=endDayFilter%>>
+                       value=<%=fc.getEndDayFilter()%>>
             </div>
             <div class="search">
                 <select class="filter_height" id="category" name="category">
