@@ -51,6 +51,7 @@
         <link href="style.css" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
         <script src="https://kit.fontawesome.com/1b3dd0a9c0.js" crossorigin="anonymous"></script>
+        <script src="urlsafe-base64.js"></script>
     </head>
     <body>
         <div class="detail_info_box">
@@ -176,7 +177,7 @@
 
             function doAction(actionType) {
                 location.href = "doPasswordCheckAction.jsp?id=" + ${board.boardId} +
-                    "&pw=" + $('#password').val() + "&type=" + actionType;
+                    "&pw=" + encode(btoa($('#password').val())) + "&type=" + actionType;
             }
         </script>
 

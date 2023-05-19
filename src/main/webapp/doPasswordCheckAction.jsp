@@ -3,11 +3,12 @@
 <%@ page import="java.sql.Connection" %>
 <%@ page import="java.sql.Statement" %>
 <%@ page import="java.security.MessageDigest" %>
+<%@ page import="org.springframework.util.Base64Utils" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     try {
         String boardId = request.getParameter("id");
-        String userPassword = request.getParameter("pw");
+        String userPassword = new String(Base64Utils.decodeFromUrlSafeString(request.getParameter("pw")));
         String type = request.getParameter("type");
 
         Connection connection = MySqlConnection.getConnection();
