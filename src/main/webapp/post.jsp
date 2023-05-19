@@ -229,7 +229,7 @@
             formData.append('file2', file2);
             formData.append('file3', file3);
 
-            const response = await fetch('doUploadAction.jsp', {
+            const response = await fetch('doPostAction.jsp', {
                 method: 'POST',
                 body: formData
             });
