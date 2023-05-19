@@ -6,61 +6,18 @@
 <%@ page import="ebrainsoft.week1.model.Board" %>
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="ebrainsoft.week1.model.searchfilter.SearchUtil" %>
+<%@ page import="ebrainsoft.week1.model.searchfilter.FilterCondition" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
-    //검색 조건 확인
-    String startDayParam = request.getParameter("reg_start_date");
-    String endDayParam = request.getParameter("reg_end_date");
-    String categoryParam = request.getParameter("category");
-    String searchTextParam = request.getParameter("searchText");
+    FilterCondition sfc = SearchUtil.updateFilterConditionIfSearchConditionExist(request);
 
-    String startDayFilter;
-    String endDayFilter;
-    String categoryFilter = "all";
-    String searchTextFilter = "";
-
-    //검색 버튼을 누른 경우
-    if (startDayParam != null && endDayParam != null && categoryParam != null && searchTextParam != null) {
-        request.getSession().setAttribute("reg_start_date", startDayParam);
-        request.getSession().setAttribute("reg_end_date", endDayParam);
-        request.getSession().setAttribute("category", categoryParam);
-        request.getSession().setAttribute("searchText", searchTextParam);
-        startDayFilter = startDayParam;
-        endDayFilter = endDayParam;
-        if (!categoryParam.equals("all")) {
-            categoryFilter = categoryParam;
-        }
-        if (!searchTextParam.isEmpty()) {
-            searchTextFilter = searchTextParam;
-        }
-        request.getSession().setAttribute("curPage", 1);
-    }
-    //검색 버튼 안누르고 조회하는 경우
-    else {
-        String tempStartDay = (String) request.getSession().getAttribute("reg_start_date");
-        String tempEndDay = (String) request.getSession().getAttribute("reg_end_date");
-        String tempCategory = (String) request.getSession().getAttribute("category");
-        String tempSearchText = (String) request.getSession().getAttribute("searchText");
-
-        //한번도 검색을 안 누른 경우 -> 새로 조회, 현재 날짜로 조회
-        if (tempStartDay == null || tempEndDay == null || tempCategory == null || tempSearchText == null) {
-            startDayFilter = String.valueOf(LocalDate.now().minusYears(1));
-            endDayFilter = String.valueOf(LocalDate.now());
-        }
-        //이미 한번 조회를 해서 데이터가 들어가 있는 경우 -> Session에서 확인한다.
-        else {
-            startDayFilter = tempStartDay;
-            endDayFilter = tempEndDay;
-            if (!tempCategory.equals("all")) {
-                categoryFilter = tempCategory;
-            }
-            if (!tempSearchText.isEmpty()) {
-                searchTextFilter = tempSearchText;
-            }
-        }
-    }
+    String startDayFilter = sfc.getStartDayFilter();
+    String endDayFilter = sfc.getEndDayFilter();
+    String categoryFilter = sfc.getCategoryFilter();
+    String searchTextFilter = sfc.getSearchTextFilter();
 
     try {
         //목록 조회
@@ -134,6 +91,7 @@
         searchStatement.setString(1, startDayFilter + " 00:00:00");
         searchStatement.setString(2, endDayFilter + " 23:59:59");
 
+        System.out.println(searchStatement);
 
         resultSet = searchStatement.executeQuery();
 
