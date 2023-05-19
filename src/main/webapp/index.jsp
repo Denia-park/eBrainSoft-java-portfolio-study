@@ -16,9 +16,17 @@
     String categoryParam = request.getParameter("category");
     String searchTextParam = request.getParameter("searchText");
     String pageParam = request.getParameter("page");
-    if (pageParam == null) {
-        pageParam = "1";
+    int curPage = 1;
+    if (pageParam != null) {
+        try {
+            int tempPage = Integer.parseInt(pageParam);
+            if (0 < tempPage && tempPage <= 1000_000) {
+                curPage = tempPage;
+            }
+        } catch (NumberFormatException ignored) {
+        }
     }
+
     String startDayFilter;
     String endDayFilter;
     String categoryFilter = "all";
@@ -91,8 +99,8 @@
         int pageSizeLimit = 10;
         sql += " order by REG_DATETIME desc limit " + pageSizeLimit;
 
-        if (!pageParam.equals("1")) {
-            int pageOffset = (Integer.parseInt(pageParam) - 1) * pageSizeLimit;
+        if (curPage != 1) {
+            int pageOffset = (curPage - 1) * pageSizeLimit;
 
             sql += " offset " + pageOffset;
         }
@@ -143,14 +151,20 @@
 
         //전체 게시글 수 조회
         int boardCount = resultSet.getInt("cnt");
+        int totalPage = (int) Math.ceil(boardCount / 10d);
+
+        int prevPage = curPage == 1 ? 1 : curPage - 1;
+        int nextPage = curPage == totalPage ? totalPage : curPage + 1;
 
         pageContext.setAttribute("category", categoryFilter);
         pageContext.setAttribute("searchText", searchTextFilter);
         pageContext.setAttribute("categoryList", categoryList);
         pageContext.setAttribute("boardList", boardList);
         pageContext.setAttribute("boardCount", boardCount);
-        pageContext.setAttribute("totalPage", (int) Math.ceil(boardCount / 10d));
-        pageContext.setAttribute("curPage", pageParam);
+        pageContext.setAttribute("totalPage", totalPage);
+        pageContext.setAttribute("curPage", curPage);
+        pageContext.setAttribute("prevPage", prevPage);
+        pageContext.setAttribute("nextPage", nextPage);
 
     } catch (Exception e) {
         throw new RuntimeException(e);
@@ -250,13 +264,24 @@
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
+                    <li class="page-item">
+                        <a aria-label="Previous" class="page-link" href="index.jsp?page=${prevPage}">
+                            <span aria-hidden="true"><</span>
+                        </a>
+                    </li>
                     <c:forEach var="num" begin="1" end="${totalPage}" step="1">
-                        <li class="page-item"><a class="page-link" <c:if
-                                test="${num == curPage}"> id="page_select"</c:if>
-                                                 href="index.jsp?page=${num}">${num}</a></li>
+                        <li class="page-item">
+                            <a class="page-link" <c:if test="${num == curPage}"> id="page_select"</c:if>
+                               href="index.jsp?page=${num}">${num}</a>
+                        </li>
                     </c:forEach>
                     <li class="page-item">
-                        <a aria-label="Next" class="page-link" href="index.jsp?page=${(totalPage)}">
+                        <a aria-label="Next" class="page-link" href="index.jsp?page=${nextPage}">
+                            <span aria-hidden="true">></span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a aria-label="Next" class="page-link" href="index.jsp?page=${totalPage}">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
