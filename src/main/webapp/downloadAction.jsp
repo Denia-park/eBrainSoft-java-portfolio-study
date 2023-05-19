@@ -1,7 +1,6 @@
 <%@ page import="java.io.File" %>
 <%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ page import="java.io.FileInputStream" %>
-<%@ page import="java.io.IOException" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     String fileName = request.getParameter("file");
@@ -19,7 +18,7 @@
     response.setHeader("Content-Disposition", "attachment; filename=\"" + downloadName + "\";");
 
     FileInputStream fis = new FileInputStream(file);
-    
+
     ServletOutputStream servletOutputStream = response.getOutputStream();
 
     byte[] b = new byte[1024];
