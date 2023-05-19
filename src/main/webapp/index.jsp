@@ -1,7 +1,7 @@
 <%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
 <%@ page import="java.sql.*" %>
-<%@ page import="ebrainsoft.week1.model.searchfilter.SearchUtil" %>
-<%@ page import="ebrainsoft.week1.model.searchfilter.FilterCondition" %>
+<%@ page import="ebrainsoft.week1.util.SearchUtil" %>
+<%@ page import="ebrainsoft.week1.model.FilterCondition" %>
 <%@ page import="ebrainsoft.week1.model.BoardInfo" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

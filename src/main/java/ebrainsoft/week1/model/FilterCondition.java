@@ -1,4 +1,4 @@
-package ebrainsoft.week1.model.searchfilter;
+package ebrainsoft.week1.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

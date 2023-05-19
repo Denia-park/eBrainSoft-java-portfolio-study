@@ -1,6 +1,5 @@
 package ebrainsoft.week1.model;
 
-import ebrainsoft.week1.model.searchfilter.FilterCondition;
 import lombok.Getter;
 
 import java.sql.*;
