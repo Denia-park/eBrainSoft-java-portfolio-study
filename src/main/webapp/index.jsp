@@ -21,17 +21,11 @@
 
     try {
         //목록 조회
-        Connection connection = MySqlConnection.getConnection();
-        Statement statement = connection.createStatement();
+        Connection con = MySqlConnection.getConnection();
 
-        List<String> categoryList = new ArrayList<>();
-        String sql = "select * from category";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next()) {
-            categoryList.add(resultSet.getString("NAME"));
-        }
+        List<String> categoryList = MySqlConnection.getCategoryList(con);
 
-        sql = "select * from board where REG_DATETIME between ? and ?";
+        String sql = "select * from board where REG_DATETIME between ? and ?";
         if (!categoryFilter.equals("all")) {
             sql += " and CATEGORY = '" + categoryFilter + "'";
         }
@@ -43,12 +37,12 @@
 
         String countSql = "select count(*) as cnt " + sql.substring(9);
 
-        PreparedStatement countStatement = connection.prepareStatement(countSql);
+        PreparedStatement countStatement = con.prepareStatement(countSql);
         //시간 추가 -> 해야지만 검색이 가능함
         countStatement.setString(1, startDayFilter + " 00:00:00");
         countStatement.setString(2, endDayFilter + " 23:59:59");
 
-        resultSet = countStatement.executeQuery();
+        ResultSet resultSet = countStatement.executeQuery();
         resultSet.next();
 
         //전체 게시글 수 조회
@@ -86,7 +80,7 @@
             sql += " offset " + pageOffset;
         }
 
-        PreparedStatement searchStatement = connection.prepareStatement(sql);
+        PreparedStatement searchStatement = con.prepareStatement(sql);
         //시간 추가 -> 해야지만 검색이 가능함
         searchStatement.setString(1, startDayFilter + " 00:00:00");
         searchStatement.setString(2, endDayFilter + " 23:59:59");
@@ -143,8 +137,7 @@
         pageContext.setAttribute("pageLimitStart", pageLimitStart);
         pageContext.setAttribute("pageLimitEnd", pageLimitEnd);
 
-        connection.close();
-        statement.close();
+        con.close();
         resultSet.close();
         countStatement.close();
         searchStatement.close();

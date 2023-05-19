@@ -1,8 +1,8 @@
 package ebrainsoft.week1.connection;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MySqlConnection {
     static final String DB_URL = "jdbc:mysql://localhost:3306/ebrainsoft_study";
@@ -10,7 +10,6 @@ public class MySqlConnection {
     static final String PASS = "ebsoft";
 
     public static Connection getConnection() throws Exception {
-
         Connection conn = null;
 
         try {
@@ -26,5 +25,23 @@ public class MySqlConnection {
         }
 
         return conn;
+    }
+
+
+    public static List<String> getCategoryList(Connection con) throws Exception {
+        List<String> rtList = new ArrayList<>();
+        String sql = "select * from category";
+
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(sql);
+
+        while (rs.next()) {
+            rtList.add(rs.getString("NAME"));
+        }
+
+        st.close();
+        rs.close();
+
+        return rtList;
     }
 }
