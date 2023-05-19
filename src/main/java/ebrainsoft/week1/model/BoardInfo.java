@@ -1,14 +1,15 @@
 package ebrainsoft.week1.model;
 
 import ebrainsoft.week1.model.searchfilter.FilterCondition;
+import lombok.Getter;
 
-import javax.servlet.jsp.PageContext;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class BoardInfo {
     public static final int PAGE_SIZE_LIMIT = 10;
     public static final int PAGE_NUM_WIDTH_LIMIT = 5;
@@ -178,31 +179,23 @@ public class BoardInfo {
         this.categoryList = rtList;
     }
 
-    public void updateAllAttribute(PageContext pageContext, FilterCondition fc) {
-        int curPage = this.needPageNum;
+    public int getNeedPageNum() {
+        return needPageNum;
+    }
 
-        int prevPage = curPage == DEFAULT_START_PAGE_NUM ? DEFAULT_START_PAGE_NUM : curPage - 1;
-        int nextPage = curPage == this.totalPage ? this.totalPage : curPage + 1;
+    public int getPrevPage() {
+        return this.needPageNum == DEFAULT_START_PAGE_NUM ? DEFAULT_START_PAGE_NUM : this.needPageNum - 1;
+    }
 
-        int pageLimitStart = 1 + (((curPage - 1) / PAGE_NUM_WIDTH_LIMIT) * PAGE_NUM_WIDTH_LIMIT);
-        int pageLimitEnd = Math.min(pageLimitStart + (PAGE_NUM_WIDTH_LIMIT - DEFAULT_START_PAGE_NUM), this.totalPage);
+    public int getNextPage() {
+        return this.needPageNum == this.totalPage ? this.totalPage : this.needPageNum + 1;
+    }
 
-        pageContext.setAttribute("categoryList", this.categoryList);
+    public int getPageLimitStart() {
+        return 1 + (((this.needPageNum - 1) / PAGE_NUM_WIDTH_LIMIT) * PAGE_NUM_WIDTH_LIMIT);
+    }
 
-        pageContext.setAttribute(SEARCH_CATEGORY, fc.getCategoryFilter());
-        pageContext.setAttribute(SEARCH_TEXT, fc.getSearchTextFilter());
-
-        pageContext.setAttribute("boardList", this.boardList);
-        pageContext.setAttribute("totalCount", this.totalCount);
-
-        pageContext.setAttribute(CUR_PAGE, curPage);
-        pageContext.setAttribute("totalPage", this.totalPage);
-        pageContext.setAttribute("prevPage", prevPage);
-        pageContext.setAttribute("nextPage", nextPage);
-
-        pageContext.setAttribute("pageLimitStart", pageLimitStart);
-        pageContext.setAttribute("pageLimitEnd", pageLimitEnd);
-
-//        request.getSession().setAttribute(CUR_PAGE, curPage);
+    public int getPageLimitEnd(int pageLimitStart) {
+        return Math.min(pageLimitStart + (PAGE_NUM_WIDTH_LIMIT - DEFAULT_START_PAGE_NUM), this.totalPage);
     }
 }

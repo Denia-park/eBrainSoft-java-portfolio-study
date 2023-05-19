@@ -1,10 +1,4 @@
-<%@ page import="java.time.LocalDate" %>
-<%@ page import="java.time.format.DateTimeFormatter" %>
-<%@ page import="java.util.List" %>
 <%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="ebrainsoft.week1.model.Board" %>
-<%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="ebrainsoft.week1.model.searchfilter.SearchUtil" %>
 <%@ page import="ebrainsoft.week1.model.searchfilter.FilterCondition" %>
@@ -21,7 +15,21 @@
 
         boardInfo.queryCategoryList(con);
         boardInfo.queryBoardData(con, fc);
-        boardInfo.updateAllAttribute(pageContext, fc);
+        request.getSession().setAttribute("curPage", boardInfo.getNeedPageNum());
+
+        pageContext.setAttribute("categoryList", boardInfo.getCategoryList());
+        pageContext.setAttribute("searchCategory", fc.getCategoryFilter());
+        pageContext.setAttribute("searchText", fc.getSearchTextFilter());
+        pageContext.setAttribute("boardList", boardInfo.getBoardList());
+        pageContext.setAttribute("totalCount", boardInfo.getTotalCount());
+
+        pageContext.setAttribute("curPage", boardInfo.getNeedPageNum());
+        pageContext.setAttribute("totalPage", boardInfo.getTotalPage());
+        pageContext.setAttribute("prevPage", boardInfo.getPrevPage());
+        pageContext.setAttribute("nextPage", boardInfo.getNextPage());
+
+        pageContext.setAttribute("pageLimitStart", boardInfo.getPageLimitStart());
+        pageContext.setAttribute("pageLimitEnd", boardInfo.getPageLimitEnd(boardInfo.getPageLimitStart()));
 
         con.close();
     } catch (Exception e) {
