@@ -7,5 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FileInfo {
     private final String fileName;
+    private final String fileRealName;
     private final String urlEncodedFileRealName;
 }

@@ -20,8 +20,9 @@ public class FileUtil {
 
         List<FileInfo> fileInfoList = new ArrayList<>();
         while (rs.next()) {
-            String urlEncodedFileRealName = URLEncoder.encode(rs.getString("FILE_REAL_NAME"), StandardCharsets.UTF_8);
-            fileInfoList.add(new FileInfo(rs.getString("FILE_NAME"), urlEncodedFileRealName));
+            String fileRealName = rs.getString("FILE_REAL_NAME");
+            String urlEncodedFileRealName = URLEncoder.encode(fileRealName, StandardCharsets.UTF_8);
+            fileInfoList.add(new FileInfo(rs.getString("FILE_NAME"), fileRealName, urlEncodedFileRealName));
         }
 
         st.close();

@@ -1,88 +1,44 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="java.sql.ResultSet" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
 <%@ page import="java.sql.Connection" %>
-<%@ page import="java.sql.Statement" %>
-<%@ page import="java.sql.PreparedStatement" %>
-<%@ page import="ebrainsoft.week1.model.Comment" %>
 <%@ page import="ebrainsoft.week1.model.Board" %>
-<%@ page import="java.time.format.DateTimeFormatter" %>
-<%@ page import="java.time.LocalDateTime" %>
-<%@ page import="java.security.MessageDigest" %>
-<%@ page import="java.nio.charset.StandardCharsets" %>
-<%@ page import="java.net.URLEncoder" %>
+<%@ page import="ebrainsoft.week1.util.BoardUtil" %>
+<%@ page import="ebrainsoft.week1.util.FileUtil" %>
+<%@ page import="ebrainsoft.week1.model.FileInfo" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     String boardId = request.getParameter("id");
     String status = request.getParameter("status");
 
-    pageContext.setAttribute("status", status);
-
     try {
-        Connection connection = MySqlConnection.getConnection();
+        Connection con = MySqlConnection.getConnection();
 
-        //내용 조회
-        Statement statement = connection.createStatement();
+        BoardUtil boardUtil = new BoardUtil();
+        Board findBoard = boardUtil.querySingleBoard(con, boardId);
 
-        String sql = "select * from board where BOARD_ID = " + boardId;
+        FileUtil fileUtil = new FileUtil();
+        List<FileInfo> fileInfoList = fileUtil.queryFileList(con, boardId);
 
-        ResultSet resultSet = statement.executeQuery(sql);
-        resultSet.next();
-
-        final String CUSTOM_DATE_FORMAT = "yyyy.MM.dd HH:mm";
-
-        LocalDateTime regDatetime = resultSet.getObject("REG_DATETIME", LocalDateTime.class);
-        String regDate = regDatetime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
-
-        String editDate = "-";
-        LocalDateTime editDatetime = resultSet.getObject("EDIT_DATETIME", LocalDateTime.class);
-        if (editDatetime != null) {
-            editDate = editDatetime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
-        }
-
-        Board findBoard = Board.builder().
-                boardId(resultSet.getLong("BOARD_ID")).
-                category(resultSet.getString("CATEGORY")).
-                regDate(regDate).
-                editDate(editDate).
-                views(Integer.valueOf(resultSet.getString("VIEWS"))).
-                writer(resultSet.getString("WRITER")).
-                password(resultSet.getString("PASSWORD")).
-                title(resultSet.getString("TITLE")).
-                content(resultSet.getString("CONTENT")).
-                fileExist(resultSet.getBoolean("FILE_EXIST")).
-                build();
-
-        //파일 보여주기.
-        sql = "select * from file where BOARD_ID = " + boardId;
-
-        resultSet = statement.executeQuery(sql);
-        List<String[]> fileNameList = new ArrayList<>();
         List<String> existFileNameList = new ArrayList<>();
-        while (resultSet.next()) {
-            String fileRealName = resultSet.getString("FILE_REAL_NAME");
-            String fileUrlName = URLEncoder.encode(fileRealName, StandardCharsets.UTF_8);
-            fileNameList.add(new String[]{resultSet.getString("FILE_NAME"), fileUrlName, fileRealName});
-            existFileNameList.add(fileRealName);
+        for (FileInfo fileInfo : fileInfoList) {
+            existFileNameList.add(fileInfo.getFileRealName());
         }
 
-        while (fileNameList.size() != 3) {
-            fileNameList.add(new String[]{null, null});
+        while (fileInfoList.size() != 3) {
+            fileInfoList.add(new FileInfo(null, null, null));
         }
 
         pageContext.setAttribute("existFileNameList", existFileNameList);
-        pageContext.setAttribute("files", fileNameList);
+        pageContext.setAttribute("files", fileInfoList);
         pageContext.setAttribute("board", findBoard);
+        pageContext.setAttribute("status", status);
 
-        connection.close();
-        statement.close();
-        resultSet.close();
+        con.close();
     } catch (Exception e) {
         throw new RuntimeException(e);
     }
-
 %>
 <!doctype html>
 <html>
@@ -91,6 +47,7 @@
         <meta content="width=device-width, initial-scale=1" name="viewport">
         <title>자유 게시판</title>
         <script src="urlsafe-base64.js"></script>
+        <script src="validator.js"></script>
         <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
         <script src="https://kit.fontawesome.com/1b3dd0a9c0.js" crossorigin="anonymous"></script>
         <!-- 공통 CSS -->
@@ -144,17 +101,17 @@
                 <tr>
                     <th scope="row">파일첨부</th>
                     <td>
-                        <c:forEach var="data" items="${files}" varStatus="stat">
+                        <c:forEach var="file" items="${files}" varStatus="stat">
                             <c:choose>
-                                <c:when test="${data[0] != null}">
+                                <c:when test="${file.fileName != null}">
                                     <div class="file edit_file_div" id="edit_file_upload_${stat.index+1}">
-                                        <i class="fa-solid fa-download"></i> ${data[0]}
+                                        <i class="fa-solid fa-download"></i> ${file.fileName}
                                         <button class="edit_file_btn"
-                                                onclick="location.href='downloadAction.jsp?file=${data[1]}'">
+                                                onclick="location.href='downloadAction.jsp?file=${file.urlEncodedFileRealName}'">
                                             Download
                                         </button>
                                         <button class="edit_file_btn"
-                                                onclick="restoreFileUploadBtn(${stat.index+1},'${data[2]}')">
+                                                onclick="restoreFileUploadBtn(${stat.index+1},'${file.fileRealName}')">
                                             X
                                         </button>
                                     </div>
@@ -226,37 +183,35 @@
         }
 
         async function doVerify() {
+            let writer = $("#board_writer");
+            let passwordFirst = $("#password_first");
+            let title = $("#board_subject");
+            let content = $("#board_content");
 
-            let writer = $("#board_writer").val();
-            let passwordFirst = $("#password_first").val();
-            let title = $("#board_subject").val();
-            let content = $("#board_content").val();
+            if (isNotValidWriter(writer)) {
+                return;
+            }
+
+            if (isNotValidTypePassword(passwordFirst.val())) {
+                passwordFirst.focus();
+                return true;
+            }
+
+            if (isNotValidTitle(title)) {
+                return;
+            }
+
+            if (isNotValidContent(content)) {
+                return;
+            }
+
+            await sendFormData(writer.val(), title.val(), content.val(), passwordFirst.val());
+        }
+
+        async function sendFormData(writer, title, content, passwordFirst) {
             let file1 = $("#ex_filename_1")[0].files[0];
             let file2 = $("#ex_filename_2")[0].files[0];
             let file3 = $("#ex_filename_3")[0].files[0];
-
-
-            if (writer.length < 3 || 4 < writer.length) {
-                alert("작성자는 3글자 이상, 5글자 미만입니다.");
-                $("#board_writer").focus();
-                return;
-            }
-            const regex = /[a-zA-Z0-9{}\[\]\/?.,;:|()*~`!^\-_+<>@#$%&\\='"]{4,15}/;
-            if (!regex.test(passwordFirst)) {
-                alert("비밀번호는 4글자 이상, 16글자 미만입니다.");
-                $("#password_first").focus();
-                return;
-            }
-            if (title.length < 3 || 100 < title.length) {
-                alert("제목은 4글자 이상, 100글자 미만입니다.");
-                $("#board_subject").focus();
-                return;
-            }
-            if (content.length < 4 || 2000 < content.length) {
-                alert("내용은 4글자 이상, 2000글자 미만입니다.");
-                $("#board_writer").focus();
-                return;
-            }
 
             let formData = new FormData();
             formData.set('enctype', 'multipart/form-data');
