@@ -18,7 +18,7 @@ public class SearchUtil {
     private static final String EMPTY_STRING = "";
 
     private static final int DEFAULT_YEAR_GAP = 1;
-    private static final int DEFAULT_START_PAGE = 1;
+    private static final int DEFAULT_START_PAGE_NUM = 1;
 
     private SearchUtil() {
     }
@@ -40,6 +40,7 @@ public class SearchUtil {
         String endDay = (String) session.getAttribute(REG_END_DATE);
         String category = getCategory(session);
         String searchText = getSearchText(session);
+        Integer needPageNum = getNeedPageNum(request);
 
         //한번도 검색을 안 누른 경우 -> 새로 조회, 현재 날짜로 조회
         if (hasNotFilterConditionInSession(session)) {
@@ -47,7 +48,7 @@ public class SearchUtil {
             endDay = String.valueOf(LocalDate.now());
         }
 
-        return new FilterCondition(startDay, endDay, category, searchText, DEFAULT_START_PAGE);
+        return new FilterCondition(startDay, endDay, category, searchText, needPageNum);
     }
 
     private static boolean hasNotFilterConditionInSession(HttpSession session) {
@@ -62,15 +63,14 @@ public class SearchUtil {
         String endDayFilter = request.getParameter(REG_END_DATE);
         String categoryFilter = getCategory(request);
         String searchTextFilter = getSearchText(request);
-        Integer curPage = getCurPage(request);
-
+        Integer needPageNum = getNeedPageNum(request);
 
         updateSessionInfo(request);
 
-        return new FilterCondition(startDayFilter, endDayFilter, categoryFilter, searchTextFilter, curPage);
+        return new FilterCondition(startDayFilter, endDayFilter, categoryFilter, searchTextFilter, needPageNum);
     }
 
-    private static Integer getCurPage(HttpServletRequest request) {
+    private static Integer getNeedPageNum(HttpServletRequest request) {
         String pageParam = request.getParameter("page");
 
         if (pageParam != null) {
@@ -87,7 +87,7 @@ public class SearchUtil {
             return (Integer) tempPageParam;
         }
 
-        return DEFAULT_START_PAGE;
+        return DEFAULT_START_PAGE_NUM;
     }
 
     private static Integer updateCurPage(String pageParam) {
@@ -95,7 +95,7 @@ public class SearchUtil {
             return Integer.parseInt(pageParam);
         }
 
-        return DEFAULT_START_PAGE;
+        return DEFAULT_START_PAGE_NUM;
     }
 
 
@@ -158,7 +158,7 @@ public class SearchUtil {
         session.setAttribute(REG_END_DATE, request.getParameter(REG_END_DATE));
         session.setAttribute(CATEGORY, request.getParameter(CATEGORY));
         session.setAttribute(SEARCH_TEXT, request.getParameter(SEARCH_TEXT));
-        session.setAttribute(CUR_PAGE, DEFAULT_START_PAGE);
+        session.setAttribute(CUR_PAGE, DEFAULT_START_PAGE_NUM);
     }
 
     private static boolean hasSearchCondition(HttpServletRequest request) {

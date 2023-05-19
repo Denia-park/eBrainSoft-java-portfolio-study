@@ -8,6 +8,7 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="ebrainsoft.week1.model.searchfilter.SearchUtil" %>
 <%@ page import="ebrainsoft.week1.model.searchfilter.FilterCondition" %>
+<%@ page import="ebrainsoft.week1.model.BoardInfo" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -20,102 +21,17 @@
     String searchTextFilter = sfc.getSearchTextFilter();
 
     try {
-        //목록 조회
         Connection con = MySqlConnection.getConnection();
 
         List<String> categoryList = MySqlConnection.getCategoryList(con);
 
-        String sql = "select * from board where REG_DATETIME between ? and ?";
-        if (!categoryFilter.equals("all")) {
-            sql += " and CATEGORY = '" + categoryFilter + "'";
-        }
-        if (!searchTextFilter.isEmpty()) {
-            sql += " and (TITLE like '%" + searchTextFilter + "%'";
-            sql += " or WRITER like '%" + searchTextFilter + "%'";
-            sql += " or CONTENT like '%" + searchTextFilter + "%')";
-        }
-
-        String countSql = "select count(*) as cnt " + sql.substring(sql.indexOf("from"));
-
-        PreparedStatement countStatement = con.prepareStatement(countSql);
-        //시간 추가 -> 해야지만 검색이 가능함
-        countStatement.setString(1, startDayFilter + " 00:00:00");
-        countStatement.setString(2, endDayFilter + " 23:59:59");
-
-        ResultSet resultSet = countStatement.executeQuery();
-        resultSet.next();
-
-        //전체 게시글 수 조회
-        int boardCount = resultSet.getInt("cnt");
-        //가장 작아도 1페이지는 항상 나와야 하므로 추가.
-        int totalPage = Math.max(1, (int) Math.ceil(boardCount / 10d));
-
-        int curPage = 1;
-        String pageParam = request.getParameter("page");
-        if (pageParam != null) {
-            try {
-                int tempPage = Integer.parseInt(pageParam);
-                if (0 < tempPage && tempPage <= 1000_000) {
-                    curPage = tempPage;
-                }
-            } catch (NumberFormatException ignored) {
-            }
-        } else {
-            Object tempPageParam = request.getSession().getAttribute("curPage");
-            if (tempPageParam != null) {
-                curPage = (Integer) tempPageParam;
-            }
-        }
-
-        if (curPage > totalPage) {
-            curPage = totalPage;
-        }
-
         int pageSizeLimit = 10;
-        sql += " order by REG_DATETIME desc limit " + pageSizeLimit;
+        BoardInfo boardInfo = MySqlConnection.getBoardInfo(con, sfc, pageSizeLimit);
 
-        if (curPage != 1) {
-            int pageOffset = (curPage - 1) * pageSizeLimit;
-
-            sql += " offset " + pageOffset;
-        }
-
-        PreparedStatement searchStatement = con.prepareStatement(sql);
-        //시간 추가 -> 해야지만 검색이 가능함
-        searchStatement.setString(1, startDayFilter + " 00:00:00");
-        searchStatement.setString(2, endDayFilter + " 23:59:59");
-
-        System.out.println(searchStatement);
-
-        resultSet = searchStatement.executeQuery();
-
-        final String CUSTOM_DATE_FORMAT = "yyyy.MM.dd HH:mm";
-
-        List<Board> boardList = new ArrayList<>();
-        while (resultSet.next()) {
-            LocalDateTime regDatetime = resultSet.getObject("REG_DATETIME", LocalDateTime.class);
-            String regDate = regDatetime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
-
-            String editDate = "-";
-            LocalDateTime editDatetime = resultSet.getObject("EDIT_DATETIME", LocalDateTime.class);
-            if (editDatetime != null) {
-                editDate = editDatetime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
-            }
-
-            boardList.add(
-                    Board.builder().
-                            boardId(resultSet.getLong("BOARD_ID")).
-                            category(resultSet.getString("CATEGORY")).
-                            regDate(regDate).
-                            editDate(editDate).
-                            views(resultSet.getInt("VIEWS")).
-                            writer(resultSet.getString("WRITER")).
-                            password(resultSet.getString("PASSWORD")).
-                            title(resultSet.getString("TITLE")).
-                            content(resultSet.getString("CONTENT")).
-                            fileExist(resultSet.getBoolean("FILE_EXIST")).
-                            build());
-        }
+        List<Board> boardList = boardInfo.getBoardList();
+        int curPage = boardInfo.getNeedPageNum();
+        int totalPage = boardInfo.getTotalPage();
+        int totalCount = boardInfo.getTotalCount();
 
         int prevPage = curPage == 1 ? 1 : curPage - 1;
         int nextPage = curPage == totalPage ? totalPage : curPage + 1;
@@ -128,7 +44,7 @@
         pageContext.setAttribute("searchText", searchTextFilter);
         pageContext.setAttribute("categoryList", categoryList);
         pageContext.setAttribute("boardList", boardList);
-        pageContext.setAttribute("boardCount", boardCount);
+        pageContext.setAttribute("totalCount", totalCount);
         pageContext.setAttribute("curPage", curPage);
         request.getSession().setAttribute("curPage", curPage);
         pageContext.setAttribute("totalPage", totalPage);
@@ -138,9 +54,6 @@
         pageContext.setAttribute("pageLimitEnd", pageLimitEnd);
 
         con.close();
-        resultSet.close();
-        countStatement.close();
-        searchStatement.close();
     } catch (Exception e) {
         throw new RuntimeException(e);
     }
@@ -191,7 +104,7 @@
         </form>
 
         <div id="total_content_num">
-            총 ${boardCount} 건
+            총 ${totalCount} 건
         </div>
 
         <table class="table table-hover text_align_center">
