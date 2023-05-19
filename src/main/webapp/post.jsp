@@ -125,48 +125,98 @@
             location.href = "index.jsp";
         }
 
+        function isNotValidCategory(category) {
+            if (category.val() === "all") {
+                alert("카테고리를 선택해주세요.");
+                category.focus();
+                return true;
+            }
+
+            return false;
+        }
+
+        function isNotValidWriter(writer) {
+            if (writer.val().length < 3 || 4 < writer.val().length) {
+                alert("작성자는 3글자 이상, 5글자 미만입니다.");
+                writer.focus();
+                return;
+            }
+
+            return false;
+        }
+
+        function isNotValidPassword(passwordFirst, passwordSecond) {
+            const regex = /[a-zA-Z0-9{}\[\]\/?.,;:|()*~`!^\-_+<>@#$%&\\='"]{4,15}/;
+            if (!regex.test(passwordFirst.val())) {
+                alert("비밀번호는 4글자 이상, 16글자 미만입니다.");
+                $("#password_first").focus();
+                return true;
+            }
+
+            if (passwordFirst.val() !== passwordSecond.val()) {
+                alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+                passwordSecond.focus();
+                return true;
+            }
+
+            return false;
+        }
+
+        function isNotValidTitle(title) {
+            if (title.val().length < 3 || 100 < title.val().length) {
+                alert("제목은 4글자 이상, 100글자 미만입니다.");
+                title.focus();
+                return true;
+            }
+
+            return false;
+        }
+
+        function isNotValidContent(content) {
+            if (content.val().length < 4 || 2000 < content.val().length) {
+                alert("내용은 4글자 이상, 2000글자 미만입니다.");
+                content.focus();
+                return true;
+            }
+
+            return false;
+        }
+
         async function doVerify() {
-            let category = $("#category").val();
-            let writer = $("#board_writer").val();
-            let passwordFirst = $("#password_first").val();
-            let passwordSecond = $("#password_second").val();
-            let title = $("#board_subject").val();
-            let content = $("#board_content").val();
+            let category = $("#category");
+            let writer = $("#board_writer");
+            let passwordFirst = $("#password_first");
+            let passwordSecond = $("#password_second");
+            let title = $("#board_subject");
+            let content = $("#board_content");
+
+            if (isNotValidCategory(category)) {
+                return;
+            }
+
+            if (isNotValidWriter(writer)) {
+                return;
+            }
+
+            if (isNotValidPassword(passwordFirst, passwordSecond)) {
+                return;
+            }
+
+            if (isNotValidTitle(title)) {
+                return;
+            }
+
+            if (isNotValidContent(content)) {
+                return;
+            }
+
+            await sendFormData(category.val(), writer.val(), title.val(), content.val(), passwordFirst.val());
+        }
+
+        async function sendFormData(category, writer, title, content, passwordFirst) {
             let file1 = $("#ex_filename_1")[0].files[0];
             let file2 = $("#ex_filename_2")[0].files[0];
             let file3 = $("#ex_filename_3")[0].files[0];
-
-            if (category === "all") {
-                alert("카테고리를 선택해주세요.");
-                $("#category").focus();
-                return;
-            }
-            if (writer.length < 3 || 4 < writer.length) {
-                alert("작성자는 3글자 이상, 5글자 미만입니다.");
-                $("#board_writer").focus();
-                return;
-            }
-            const regex = /[a-zA-Z0-9{}\[\]\/?.,;:|()*~`!^\-_+<>@#$%&\\='"]{4,15}/;
-            if (!regex.test(passwordFirst)) {
-                alert("비밀번호는 4글자 이상, 16글자 미만입니다.");
-                $("#password_first").focus();
-                return;
-            }
-            if (passwordFirst !== passwordSecond) {
-                alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-                $("#password_second").focus();
-                return;
-            }
-            if (title.length < 3 || 100 < title.length) {
-                alert("제목은 4글자 이상, 100글자 미만입니다.");
-                $("#board_subject").focus();
-                return;
-            }
-            if (content.length < 4 || 2000 < content.length) {
-                alert("내용은 4글자 이상, 2000글자 미만입니다.");
-                $("#board_writer").focus();
-                return;
-            }
 
             let formData = new FormData();
             formData.set('enctype', 'multipart/form-data');
