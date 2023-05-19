@@ -12,6 +12,22 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class PostUtil {
+    public static String ALGORITHM_SHA_256 = "SHA-256";
+
+    public static String encryptPassword(String password, String algorithmType) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance(algorithmType);
+
+        md.update(password.getBytes());
+
+        StringBuffer sb = new StringBuffer();
+
+        for (byte b : md.digest()) {
+            sb.append(String.format("%02x", b));
+        }
+
+        return sb.toString();
+    }
+
     public List<String> convertFileNameList(Enumeration fileNames) {
         List<String> fileNameList = new ArrayList<>();
         while (fileNames.hasMoreElements()) {
@@ -43,7 +59,7 @@ public class PostUtil {
         ps.setString(2, getNowDateTime());
         ps.setString(3, String.valueOf(views));
         ps.setString(4, mr.getParameter("writer"));
-        ps.setString(5, encryptPassword(mr.getParameter("password"), "SHA-256"));
+        ps.setString(5, encryptPassword(mr.getParameter("password"), ALGORITHM_SHA_256));
         ps.setString(6, mr.getParameter("title"));
         ps.setString(7, mr.getParameter("content"));
         ps.setBoolean(8, isFileExist);
@@ -57,20 +73,6 @@ public class PostUtil {
 
     private String getNowDateTime() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
-    }
-
-    private String encryptPassword(String password, String algorithmType) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance(algorithmType);
-
-        md.update(password.getBytes());
-
-        StringBuffer sb = new StringBuffer();
-
-        for (byte b : md.digest()) {
-            sb.append(String.format("%02x", b));
-        }
-
-        return sb.toString();
     }
 
     public String getBoardId(Connection con) throws SQLException {

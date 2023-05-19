@@ -4,6 +4,7 @@ import ebrainsoft.week1.model.Board;
 import ebrainsoft.week1.model.BoardInfo;
 import ebrainsoft.week1.model.FilterCondition;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +21,17 @@ public class BoardUtil {
         ps.executeUpdate();
 
         ps.close();
+    }
+
+    public int queryDeleteBoard(Connection con, String boardId) throws SQLException {
+        String sql = "delete from board where BOARD_ID = " + boardId;
+        Statement st = con.createStatement();
+
+        int result = st.executeUpdate(sql);
+
+        st.close();
+
+        return result;
     }
 
     public Board querySingleBoard(Connection con, String boardId) throws SQLException {
@@ -152,5 +164,15 @@ public class BoardUtil {
         rs.close();
 
         return totalCount;
+    }
+
+    public boolean verifyPassword(Connection con, String boardId, String userPassword) throws SQLException, NoSuchAlgorithmException {
+        Board findBoard = querySingleBoard(con, boardId);
+
+        String dbPassword = findBoard.getPassword();
+
+        String encryptedUserPassword = PostUtil.encryptPassword(userPassword, PostUtil.ALGORITHM_SHA_256);
+
+        return dbPassword.equals(encryptedUserPassword);
     }
 }
