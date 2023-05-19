@@ -79,9 +79,9 @@
             sql += " and CATEGORY = '" + categoryFilter + "'";
         }
         if (!searchTextFilter.isEmpty()) {
-            sql += " and TITLE like '%" + searchTextFilter + "%'";
+            sql += " and (TITLE like '%" + searchTextFilter + "%'";
             sql += " or WRITER like '%" + searchTextFilter + "%'";
-            sql += " or CONTENT like '%" + searchTextFilter + "%'";
+            sql += " or CONTENT like '%" + searchTextFilter + "%')";
         }
 
         String countSql = "select count(*) as cnt " + sql.substring(9);
