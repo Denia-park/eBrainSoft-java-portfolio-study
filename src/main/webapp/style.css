@@ -276,6 +276,15 @@ form.comment_input_box button {
     margin: 10px 0;
 }
 
+.page_div a {
+    color: black;
+}
+
+#page_select {
+    color: orange;
+    font-weight: bold;
+}
+
 
 #search_box {
     margin: 0px 10px;

@@ -15,6 +15,10 @@
     String endDayParam = request.getParameter("reg_end_date");
     String categoryParam = request.getParameter("category");
     String searchTextParam = request.getParameter("searchText");
+    String pageParam = request.getParameter("page");
+    if (pageParam == null) {
+        pageParam = "1";
+    }
     String startDayFilter;
     String endDayFilter;
     String categoryFilter = "all";
@@ -81,7 +85,17 @@
             sql += " or WRITER like '%" + searchTextFilter + "%'";
             sql += " or CONTENT like '%" + searchTextFilter + "%'";
         }
-        sql += " order by REG_DATETIME desc";
+
+        String countSql = "select count(*) as cnt " + sql.substring(9);
+
+        int pageSizeLimit = 10;
+        sql += " order by REG_DATETIME desc limit " + pageSizeLimit;
+
+        if (!pageParam.equals("1")) {
+            int pageOffset = (Integer.parseInt(pageParam) - 1) * pageSizeLimit;
+
+            sql += " offset " + pageOffset;
+        }
 
         PreparedStatement searchStatement = connection.prepareStatement(sql);
         //시간 추가 -> 해야지만 검색이 가능함
@@ -119,14 +133,24 @@
                             build());
         }
 
+        PreparedStatement countStatement = connection.prepareStatement(countSql);
+        //시간 추가 -> 해야지만 검색이 가능함
+        countStatement.setString(1, startDayFilter + " 00:00:00");
+        countStatement.setString(2, endDayFilter + " 23:59:59");
+
+        resultSet = countStatement.executeQuery();
+        resultSet.next();
+
         //전체 게시글 수 조회
-        int boardCount = boardList.size();
+        int boardCount = resultSet.getInt("cnt");
 
         pageContext.setAttribute("category", categoryFilter);
         pageContext.setAttribute("searchText", searchTextFilter);
         pageContext.setAttribute("categoryList", categoryList);
         pageContext.setAttribute("boardList", boardList);
         pageContext.setAttribute("boardCount", boardCount);
+        pageContext.setAttribute("totalPage", (int) Math.ceil(boardCount / 10d));
+        pageContext.setAttribute("curPage", pageParam);
 
     } catch (Exception e) {
         throw new RuntimeException(e);
@@ -218,19 +242,21 @@
             </tbody>
         </table>
 
-        <div class="align_center">
+        <div class="align_center page_div">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                     <li class="page-item">
-                        <a aria-label="Previous" class="page-link" href="#">
+                        <a aria-label="Previous" class="page-link" href="index.jsp">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <c:forEach var="num" begin="1" end="${totalPage}" step="1">
+                        <li class="page-item"><a class="page-link" <c:if
+                                test="${num == curPage}"> id="page_select"</c:if>
+                                                 href="index.jsp?page=${num}">${num}</a></li>
+                    </c:forEach>
                     <li class="page-item">
-                        <a aria-label="Next" class="page-link" href="#">
+                        <a aria-label="Next" class="page-link" href="index.jsp?page=${(totalPage)}">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
