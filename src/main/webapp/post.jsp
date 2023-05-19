@@ -148,7 +148,7 @@
         function isNotValidPassword(passwordFirst, passwordSecond) {
             const regex = /[a-zA-Z0-9{}\[\]\/?.,;:|()*~`!^\-_+<>@#$%&\\='"]{4,15}/;
             if (!regex.test(passwordFirst.val())) {
-                alert("비밀번호는 4글자 이상, 16글자 미만입니다.");
+                alert("비밀번호는 4글자 이상, 16글자 미만, 영문/숫자/특수문자 만 가능합니다.");
                 $("#password_first").focus();
                 return true;
             }
