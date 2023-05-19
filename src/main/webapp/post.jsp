@@ -1,37 +1,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="java.sql.ResultSet" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="java.util.List" %>
 <%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
 <%@ page import="java.sql.Connection" %>
-<%@ page import="java.sql.Statement" %>
+<%@ page import="ebrainsoft.week1.model.BoardInfo" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     String status = request.getParameter("status");
     pageContext.setAttribute("status", status);
 
     try {
-        //목록 조회
-        Connection connection = MySqlConnection.getConnection();
-        Statement statement = connection.createStatement();
+        Connection con = MySqlConnection.getConnection();
+        BoardInfo boardInfo = new BoardInfo();
 
-        List<String> categoryList = new ArrayList<>();
-        String sql = "select * from category";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next()) {
-            categoryList.add(resultSet.getString("NAME"));
-        }
-        
-        pageContext.setAttribute("categoryList", categoryList);
+        boardInfo.queryCategoryList(con);
 
-        connection.close();
-        statement.close();
-        resultSet.close();
+        pageContext.setAttribute("categoryList", boardInfo.getCategoryList());
+
+        con.close();
     } catch (Exception e) {
         e.printStackTrace();
     }
-
-
 %>
 <!doctype html>
 <html>
