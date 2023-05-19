@@ -156,6 +156,10 @@
         int prevPage = curPage == 1 ? 1 : curPage - 1;
         int nextPage = curPage == totalPage ? totalPage : curPage + 1;
 
+        int div = (curPage - 1) / 5;
+        int pageLimitStart = 1 + (div * 5);
+        int pageLimitEnd = Math.min(pageLimitStart + 4, totalPage);
+
         pageContext.setAttribute("category", categoryFilter);
         pageContext.setAttribute("searchText", searchTextFilter);
         pageContext.setAttribute("categoryList", categoryList);
@@ -165,6 +169,8 @@
         pageContext.setAttribute("curPage", curPage);
         pageContext.setAttribute("prevPage", prevPage);
         pageContext.setAttribute("nextPage", nextPage);
+        pageContext.setAttribute("pageLimitStart", pageLimitStart);
+        pageContext.setAttribute("pageLimitEnd", pageLimitEnd);
 
     } catch (Exception e) {
         throw new RuntimeException(e);
@@ -269,7 +275,7 @@
                             <span aria-hidden="true"><</span>
                         </a>
                     </li>
-                    <c:forEach var="num" begin="1" end="${totalPage}" step="1">
+                    <c:forEach var="num" begin="${pageLimitStart}" end="${pageLimitEnd}" step="1">
                         <li class="page-item">
                             <a class="page-link" <c:if test="${num == curPage}"> id="page_select"</c:if>
                                href="index.jsp?page=${num}">${num}</a>
