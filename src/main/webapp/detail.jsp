@@ -8,6 +8,7 @@
 <%@ page import="ebrainsoft.week1.model.BoardInfo" %>
 <%@ page import="ebrainsoft.week1.model.FileInfo" %>
 <%@ page import="ebrainsoft.week1.util.CommentUtil" %>
+<%@ page import="ebrainsoft.week1.util.BoardUtil" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     String boardId = request.getParameter("id");
@@ -15,8 +16,8 @@
     try {
         Connection con = MySqlConnection.getConnection();
 
-        BoardInfo boardInfo = new BoardInfo();
-        Board findBoard = boardInfo.querySingleBoard(con, boardId);
+        BoardUtil boardUtil = new BoardUtil();
+        Board findBoard = boardUtil.querySingleBoard(con, boardId);
 
         FileUtil fileUtil = new FileUtil();
         List<FileInfo> fileInfoList = fileUtil.queryFileList(con, boardId);
@@ -24,14 +25,8 @@
         CommentUtil commentUtil = new CommentUtil();
         List<Comment> commentList = commentUtil.queryCommentList(con, boardId);
 
-//
-//        sql = "UPDATE board SET VIEWS =? where BOARD_ID = ?";
-//
-//        PreparedStatement preparedStatement = con.prepareStatement(sql);
-//        preparedStatement.setInt(1, updateViews);
-//        preparedStatement.setLong(2, findBoard.getBoardId());
-//        preparedStatement.executeUpdate();
-//
+        boardUtil.queryUpdateBoardView(con, findBoard);
+
         pageContext.setAttribute("files", fileInfoList);
         pageContext.setAttribute("board", findBoard);
         pageContext.setAttribute("commentList", commentList);
