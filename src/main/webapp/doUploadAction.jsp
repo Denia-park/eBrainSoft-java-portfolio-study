@@ -58,23 +58,23 @@
         }
 
         String sql = "insert into board (CATEGORY, REG_DATETIME, VIEWS, WRITER, PASSWORD, TITLE,CONTENT, FILE_EXIST) values (?,?,?,?,?,?,?,?)";
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setString(1, category);
-        ps.setString(2, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")));
-        ps.setString(3, "0");
-        ps.setString(4, writer);
+        PreparedStatement uploadStatement = connection.prepareStatement(sql);
+        uploadStatement.setString(1, category);
+        uploadStatement.setString(2, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")));
+        uploadStatement.setString(3, "0");
+        uploadStatement.setString(4, writer);
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(password.getBytes());
         StringBuffer sb = new StringBuffer();
         for (byte b : md.digest()) {
             sb.append(String.format("%02x", b));
         }
-        ps.setString(5, sb.toString());
-        ps.setString(6, title);
-        ps.setString(7, content);
-        ps.setBoolean(8, isFileExist);
+        uploadStatement.setString(5, sb.toString());
+        uploadStatement.setString(6, title);
+        uploadStatement.setString(7, content);
+        uploadStatement.setBoolean(8, isFileExist);
 
-        int result = ps.executeUpdate();
+        int result = uploadStatement.executeUpdate();
 
         if (result < 0) {
             response.sendRedirect("post.jsp?status=fail");
@@ -82,8 +82,8 @@
         }
 
         sql = "select LAST_INSERT_ID() as boardId";
-        Statement st = connection.createStatement();
-        ResultSet resultSet = st.executeQuery(sql);
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
         resultSet.next();
 
         String boardId = resultSet.getString("boardId");
@@ -94,12 +94,17 @@
 
             sql = "insert into file (BOARD_ID,FILE_NAME, FILE_REAL_NAME) values (?,?,?)";
 
-            ps = connection.prepareStatement(sql);
-            ps.setString(1, boardId);
-            ps.setString(2, fileName);
-            ps.setString(3, fileRealName);
-            result = ps.executeUpdate();
+            uploadStatement = connection.prepareStatement(sql);
+            uploadStatement.setString(1, boardId);
+            uploadStatement.setString(2, fileName);
+            uploadStatement.setString(3, fileRealName);
+            result = uploadStatement.executeUpdate();
         }
+
+        connection.close();
+        uploadStatement.close();
+        statement.close();
+        resultSet.close();
 
         if (result > 0) {
             response.sendRedirect("index.jsp");

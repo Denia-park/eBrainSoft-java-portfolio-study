@@ -97,6 +97,11 @@
         pageContext.setAttribute("board", findBoard);
         pageContext.setAttribute("commentList", commentList);
 
+        connection.close();
+        statement.close();
+        resultSet.close();
+        preparedStatement.close();
+
     } catch (Exception e) {
         throw new RuntimeException(e);
     }

@@ -149,7 +149,7 @@
 
 ### 공통
 
-- [ ] 사용한 JDBC Connection들을 close 해주기.
+- [X] ~~사용한 JDBC Connection들을 close 해주기.~~
 - [ ] url로 전송하는 데이터들 모두 URL encode 하기.
 - [ ] refactoring 진행
 

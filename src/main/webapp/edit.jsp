@@ -76,6 +76,9 @@
         pageContext.setAttribute("files", fileNameList);
         pageContext.setAttribute("board", findBoard);
 
+        connection.close();
+        statement.close();
+        resultSet.close();
     } catch (Exception e) {
         throw new RuntimeException(e);
     }

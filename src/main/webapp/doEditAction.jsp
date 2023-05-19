@@ -141,6 +141,11 @@
             result = ps.executeUpdate();
         }
 
+        connection.close();
+        ps.close();
+        statement.close();
+        resultSet.close();
+
         if (result > 0) {
             response.sendRedirect("index.jsp");
         } else {

@@ -49,6 +49,11 @@
                 response.sendRedirect("index.jsp?status=fail");
             }
         }
+
+        connection.close();
+        statement.close();
+        resultSet.close();
+
     } catch (Exception e) {
         e.printStackTrace();
     }

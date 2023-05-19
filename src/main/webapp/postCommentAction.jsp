@@ -22,6 +22,9 @@
 
         //덧글 작성 글로 리다이렉트
         response.sendRedirect("detail.jsp?id=" + boardId);
+
+        connection.close();
+        statement.close();
     } catch (SQLException e) {
         throw new RuntimeException(e);
     }

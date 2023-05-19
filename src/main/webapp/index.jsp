@@ -90,7 +90,7 @@
         //시간 추가 -> 해야지만 검색이 가능함
         countStatement.setString(1, startDayFilter + " 00:00:00");
         countStatement.setString(2, endDayFilter + " 23:59:59");
-        
+
         resultSet = countStatement.executeQuery();
         resultSet.next();
 
@@ -185,11 +185,14 @@
         pageContext.setAttribute("pageLimitStart", pageLimitStart);
         pageContext.setAttribute("pageLimitEnd", pageLimitEnd);
 
+        connection.close();
+        statement.close();
+        resultSet.close();
+        countStatement.close();
+        searchStatement.close();
     } catch (Exception e) {
         throw new RuntimeException(e);
     }
-
-    //페이지 처리
 %>
 <!doctype html>
 <html lang="en">

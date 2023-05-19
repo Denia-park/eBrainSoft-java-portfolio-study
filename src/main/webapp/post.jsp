@@ -10,18 +10,27 @@
     String status = request.getParameter("status");
     pageContext.setAttribute("status", status);
 
-    //목록 조회
-    Connection connection = MySqlConnection.getConnection();
-    Statement statement = connection.createStatement();
+    try {
+        //목록 조회
+        Connection connection = MySqlConnection.getConnection();
+        Statement statement = connection.createStatement();
 
-    List<String> categoryList = new ArrayList<>();
-    String sql = "select * from category";
-    ResultSet resultSet = statement.executeQuery(sql);
-    while (resultSet.next()) {
-        categoryList.add(resultSet.getString("NAME"));
+        List<String> categoryList = new ArrayList<>();
+        String sql = "select * from category";
+        ResultSet resultSet = statement.executeQuery(sql);
+        while (resultSet.next()) {
+            categoryList.add(resultSet.getString("NAME"));
+        }
+        
+        pageContext.setAttribute("categoryList", categoryList);
+
+        connection.close();
+        statement.close();
+        resultSet.close();
+    } catch (Exception e) {
+        e.printStackTrace();
     }
 
-    pageContext.setAttribute("categoryList", categoryList);
 
 %>
 <!doctype html>
