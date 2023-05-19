@@ -56,11 +56,11 @@
                        value=<%=fc.getEndDayFilter()%>>
             </div>
             <div class="search">
-                <select class="filter_height" id="category" name="category">
+                <select class="filter_height" id="category" name="searchCategory">
                     <option value="all">전체 카테고리</option>
                     <c:forEach var="data" items="${categoryList}">
                         <option
-                                <c:if test='${category.equals(data)}'>selected</c:if>
+                                <c:if test='${searchCategory.equals(data)}'>selected</c:if>
                                 value="${data}">${data}
                         </option>
                     </c:forEach>

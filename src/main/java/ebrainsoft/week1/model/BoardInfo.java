@@ -10,8 +10,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BoardInfo {
-    private final int PAGE_SIZE_LIMIT = 10;
-    private final int PAGE_WIDTH_NUM_LIMIT = 5;
+    public static final int PAGE_SIZE_LIMIT = 10;
+    public static final int PAGE_NUM_WIDTH_LIMIT = 5;
+    public static final String REG_START_DATE = "reg_start_date";
+    public static final String REG_END_DATE = "reg_end_date";
+    public static final String SEARCH_CATEGORY = "searchCategory";
+    public static final String SEARCH_TEXT = "searchText";
+    public static final String PAGE = "page";
+    public static final String CUR_PAGE = "curPage";
+
+    public static final String ALL_CATEGORY_VALUE = "all";
+    public static final String EMPTY_STRING = "";
+
+    public static final int DEFAULT_YEAR_GAP = 1;
+    public static final int DEFAULT_START_PAGE_NUM = 1;
+
+
     private int totalCount;
     private int totalPage;
     private int needPageNum;
@@ -167,21 +181,21 @@ public class BoardInfo {
     public void updateAllAttribute(PageContext pageContext, FilterCondition fc) {
         int curPage = this.needPageNum;
 
-        int prevPage = curPage == 1 ? 1 : curPage - 1;
+        int prevPage = curPage == DEFAULT_START_PAGE_NUM ? DEFAULT_START_PAGE_NUM : curPage - 1;
         int nextPage = curPage == this.totalPage ? this.totalPage : curPage + 1;
 
-        int pageLimitStart = 1 + (((curPage - 1) / PAGE_WIDTH_NUM_LIMIT) * PAGE_WIDTH_NUM_LIMIT);
-        int pageLimitEnd = Math.min(pageLimitStart + (PAGE_WIDTH_NUM_LIMIT - 1), this.totalPage);
+        int pageLimitStart = 1 + (((curPage - 1) / PAGE_NUM_WIDTH_LIMIT) * PAGE_NUM_WIDTH_LIMIT);
+        int pageLimitEnd = Math.min(pageLimitStart + (PAGE_NUM_WIDTH_LIMIT - DEFAULT_START_PAGE_NUM), this.totalPage);
 
         pageContext.setAttribute("categoryList", this.categoryList);
 
-        pageContext.setAttribute("category", fc.getCategoryFilter());
-        pageContext.setAttribute("searchText", fc.getSearchTextFilter());
+        pageContext.setAttribute(SEARCH_CATEGORY, fc.getCategoryFilter());
+        pageContext.setAttribute(SEARCH_TEXT, fc.getSearchTextFilter());
 
         pageContext.setAttribute("boardList", this.boardList);
         pageContext.setAttribute("totalCount", this.totalCount);
 
-        pageContext.setAttribute("curPage", curPage);
+        pageContext.setAttribute(CUR_PAGE, curPage);
         pageContext.setAttribute("totalPage", this.totalPage);
         pageContext.setAttribute("prevPage", prevPage);
         pageContext.setAttribute("nextPage", nextPage);
@@ -189,6 +203,6 @@ public class BoardInfo {
         pageContext.setAttribute("pageLimitStart", pageLimitStart);
         pageContext.setAttribute("pageLimitEnd", pageLimitEnd);
 
-//        request.getSession().setAttribute("curPage", curPage);
+//        request.getSession().setAttribute(CUR_PAGE, curPage);
     }
 }
