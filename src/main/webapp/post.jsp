@@ -1,7 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
 <%@ page import="java.sql.Connection" %>
-<%@ page import="ebrainsoft.week1.model.BoardInfo" %>
+<%@ page import="ebrainsoft.week1.util.CategoryUtil" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     String status = request.getParameter("status");
@@ -9,11 +10,11 @@
 
     try {
         Connection con = MySqlConnection.getConnection();
-        BoardInfo boardInfo = new BoardInfo();
 
-        boardInfo.queryCategoryList(con);
+        CategoryUtil categoryUtil = new CategoryUtil();
+        List<String> categoryList = categoryUtil.queryCategoryList(con);
 
-        pageContext.setAttribute("categoryList", boardInfo.getCategoryList());
+        pageContext.setAttribute("categoryList", categoryList);
 
         con.close();
     } catch (Exception e) {

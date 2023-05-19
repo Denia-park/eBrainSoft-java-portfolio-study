@@ -3,6 +3,10 @@
 <%@ page import="ebrainsoft.week1.util.SearchUtil" %>
 <%@ page import="ebrainsoft.week1.model.FilterCondition" %>
 <%@ page import="ebrainsoft.week1.model.BoardInfo" %>
+<%@ page import="ebrainsoft.week1.util.CategoryUtil" %>
+<%@ page import="java.util.List" %>
+<%@ page import="ebrainsoft.week1.util.BoardUtil" %>
+<%@ page import="ebrainsoft.week1.model.Board" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -11,13 +15,21 @@
 
     try {
         Connection con = MySqlConnection.getConnection();
-        BoardInfo boardInfo = new BoardInfo();
 
-        boardInfo.queryCategoryList(con);
-        boardInfo.queryBoardList(con, fc);
+        CategoryUtil categoryUtil = new CategoryUtil();
+        List<String> categoryList = categoryUtil.queryCategoryList(con);
+
+        BoardUtil boardUtil = new BoardUtil();
+        int totalCount = boardUtil.queryTotalCount(con, fc);
+        int totalPage = boardUtil.getTotalPage(totalCount);
+        int needPageNum = fc.getNeedPageNum(totalPage);
+        List<Board> boardList = boardUtil.queryBoardList(con, fc, needPageNum);
+
+        BoardInfo boardInfo = new BoardInfo(totalCount, totalPage, needPageNum, boardList);
+
         request.getSession().setAttribute("curPage", boardInfo.getNeedPageNum());
 
-        pageContext.setAttribute("categoryList", boardInfo.getCategoryList());
+        pageContext.setAttribute("categoryList", categoryList);
         pageContext.setAttribute("searchCategory", fc.getCategoryFilter());
         pageContext.setAttribute("searchText", fc.getSearchTextFilter());
         pageContext.setAttribute("boardList", boardInfo.getBoardList());
