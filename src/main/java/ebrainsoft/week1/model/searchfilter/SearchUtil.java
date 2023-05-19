@@ -39,7 +39,7 @@ public class SearchUtil {
         String startDay = (String) session.getAttribute(REG_START_DATE);
         String endDay = (String) session.getAttribute(REG_END_DATE);
         String category = getCategory(session);
-        String searchText = searchText(session);
+        String searchText = getSearchText(session);
 
         //한번도 검색을 안 누른 경우 -> 새로 조회, 현재 날짜로 조회
         if (hasNotFilterConditionInSession(session)) {
@@ -47,7 +47,7 @@ public class SearchUtil {
             endDay = String.valueOf(LocalDate.now());
         }
 
-        return new FilterCondition(startDay, endDay, category, searchText);
+        return new FilterCondition(startDay, endDay, category, searchText, DEFAULT_START_PAGE);
     }
 
     private static boolean hasNotFilterConditionInSession(HttpSession session) {
@@ -61,11 +61,54 @@ public class SearchUtil {
         String startDayFilter = request.getParameter(REG_START_DATE);
         String endDayFilter = request.getParameter(REG_END_DATE);
         String categoryFilter = getCategory(request);
-        String searchTextFilter = searchText(request);
+        String searchTextFilter = getSearchText(request);
+        Integer curPage = getCurPage(request);
+
 
         updateSessionInfo(request);
 
-        return new FilterCondition(startDayFilter, endDayFilter, categoryFilter, searchTextFilter);
+        return new FilterCondition(startDayFilter, endDayFilter, categoryFilter, searchTextFilter, curPage);
+    }
+
+    private static Integer getCurPage(HttpServletRequest request) {
+        String pageParam = request.getParameter("page");
+
+        if (pageParam != null) {
+            return updateCurPage(pageParam);
+        }
+
+        return getSessionCurPage(request);
+    }
+
+    private static Integer getSessionCurPage(HttpServletRequest request) {
+        Object tempPageParam = request.getSession().getAttribute("curPage");
+
+        if (tempPageParam != null) {
+            return (Integer) tempPageParam;
+        }
+
+        return DEFAULT_START_PAGE;
+    }
+
+    private static Integer updateCurPage(String pageParam) {
+        if (isDigit(pageParam)) {
+            return Integer.parseInt(pageParam);
+        }
+
+        return DEFAULT_START_PAGE;
+    }
+
+
+    private static boolean isDigit(String pageParam) {
+        char[] chars = pageParam.toCharArray();
+
+        for (char c : chars) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static String getCategory(HttpSession session) {
@@ -78,7 +121,7 @@ public class SearchUtil {
         return ALL_CATEGORY_VALUE;
     }
 
-    private static String searchText(HttpSession session) {
+    private static String getSearchText(HttpSession session) {
         String tempSearchText = (String) session.getAttribute(SEARCH_TEXT);
 
         if (tempSearchText != null && !tempSearchText.isEmpty()) {
@@ -98,7 +141,7 @@ public class SearchUtil {
         return ALL_CATEGORY_VALUE;
     }
 
-    private static String searchText(HttpServletRequest request) {
+    private static String getSearchText(HttpServletRequest request) {
         String tempSearchText = request.getParameter(SEARCH_TEXT);
 
         if (tempSearchText != null && !tempSearchText.isEmpty()) {

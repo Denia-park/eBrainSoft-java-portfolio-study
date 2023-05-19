@@ -1,18 +1,14 @@
 package ebrainsoft.week1.model.searchfilter;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public class FilterCondition {
-    private String startDayFilter;
-    private String endDayFilter;
-    private String categoryFilter;
-    private String searchTextFilter;
-
-    public FilterCondition(String startDayFilter, String endDayFilter, String categoryFilter, String searchTextFilter) {
-        this.startDayFilter = startDayFilter;
-        this.endDayFilter = endDayFilter;
-        this.categoryFilter = categoryFilter;
-        this.searchTextFilter = searchTextFilter;
-    }
+    private final String startDayFilter;
+    private final String endDayFilter;
+    private final String categoryFilter;
+    private final String searchTextFilter;
+    private final Integer curPage;
 }
