@@ -1,112 +1,47 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="java.time.format.DateTimeFormatter" %>
-<%@ page import="java.sql.PreparedStatement" %>
 <%@ page import="ebrainsoft.week1.model.Board" %>
-<%@ page import="java.time.LocalDateTime" %>
-<%@ page import="java.time.LocalDate" %>
-<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
-<%@ page import="java.sql.ResultSet" %>
 <%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
 <%@ page import="java.sql.Connection" %>
-<%@ page import="java.sql.Statement" %>
 <%@ page import="ebrainsoft.week1.model.Comment" %>
-<%@ page import="java.io.File" %>
-<%@ page import="java.net.URLEncoder" %>
-<%@ page import="java.nio.charset.StandardCharsets" %>
+<%@ page import="ebrainsoft.week1.util.FileUtil" %>
+<%@ page import="ebrainsoft.week1.model.BoardInfo" %>
+<%@ page import="ebrainsoft.week1.model.FileInfo" %>
+<%@ page import="ebrainsoft.week1.util.CommentUtil" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
-    //검색 조건 확인
     String boardId = request.getParameter("id");
-    String status = request.getParameter("status");
-    String type = request.getParameter("type");
-    pageContext.setAttribute("status", status);
-    pageContext.setAttribute("type", type);
 
     try {
-        Connection connection = MySqlConnection.getConnection();
+        Connection con = MySqlConnection.getConnection();
 
-        //내용 조회
-        Statement statement = connection.createStatement();
+        BoardInfo boardInfo = new BoardInfo();
+        Board findBoard = boardInfo.querySingleBoard(con, boardId);
 
-        String sql = "select * from board where BOARD_ID = " + boardId;
+        FileUtil fileUtil = new FileUtil();
+        List<FileInfo> fileInfoList = fileUtil.queryFileList(con, boardId);
 
-        ResultSet resultSet = statement.executeQuery(sql);
-        resultSet.next();
+        CommentUtil commentUtil = new CommentUtil();
+        List<Comment> commentList = commentUtil.queryCommentList(con, boardId);
 
-        final String CUSTOM_DATE_FORMAT = "yyyy.MM.dd HH:mm";
-
-        LocalDateTime regDatetime = resultSet.getObject("REG_DATETIME", LocalDateTime.class);
-        String regDate = regDatetime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
-
-        String editDate = "-";
-        LocalDateTime editDatetime = resultSet.getObject("EDIT_DATETIME", LocalDateTime.class);
-        if (editDatetime != null) {
-            editDate = editDatetime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
-        }
-
-        //미리 조회수 1 올린다
-        int updateViews = resultSet.getInt("VIEWS") + 1;
-
-        Board findBoard = Board.builder().
-                boardId(resultSet.getLong("BOARD_ID")).
-                category(resultSet.getString("CATEGORY")).
-                regDate(regDate).
-                editDate(editDate).
-                views(updateViews).
-                writer(resultSet.getString("WRITER")).
-                password(resultSet.getString("PASSWORD")).
-                title(resultSet.getString("TITLE")).
-                content(resultSet.getString("CONTENT")).
-                fileExist(resultSet.getBoolean("FILE_EXIST")).
-                build();
-
-        sql = "select * from file where BOARD_ID = " + boardId;
-
-        resultSet = statement.executeQuery(sql);
-        List<String[]> fileNameList = new ArrayList<>();
-        while (resultSet.next()) {
-            String fileRealName = URLEncoder.encode(resultSet.getString("FILE_REAL_NAME"), StandardCharsets.UTF_8);
-            fileNameList.add(new String[]{resultSet.getString("FILE_NAME"), fileRealName});
-        }
-
-        sql = "select * from comment where BOARD_ID = " + boardId;
-
-        resultSet = statement.executeQuery(sql);
-
-        List<Comment> commentList = new ArrayList<>();
-        while (resultSet.next()) {
-            commentList.add(
-                    Comment.builder().
-                            replyId(resultSet.getLong("REPLY_ID")).
-                            boardId(resultSet.getLong("BOARD_ID")).
-                            content(resultSet.getString("CONTENT")).
-                            regDate(resultSet.getString("REG_DATETIME")).
-                            build()
-            );
-        }
-
-        sql = "UPDATE board SET VIEWS =? where BOARD_ID = ?";
-
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setInt(1, updateViews);
-        preparedStatement.setLong(2, findBoard.getBoardId());
-        preparedStatement.executeUpdate();
-
-        pageContext.setAttribute("files", fileNameList);
+//
+//        sql = "UPDATE board SET VIEWS =? where BOARD_ID = ?";
+//
+//        PreparedStatement preparedStatement = con.prepareStatement(sql);
+//        preparedStatement.setInt(1, updateViews);
+//        preparedStatement.setLong(2, findBoard.getBoardId());
+//        preparedStatement.executeUpdate();
+//
+        pageContext.setAttribute("files", fileInfoList);
         pageContext.setAttribute("board", findBoard);
         pageContext.setAttribute("commentList", commentList);
+        pageContext.setAttribute("status", request.getParameter("status"));
+        pageContext.setAttribute("type", request.getParameter("type"));
 
-        connection.close();
-        statement.close();
-        resultSet.close();
-        preparedStatement.close();
-
+        con.close();
     } catch (Exception e) {
         throw new RuntimeException(e);
     }
-
-    //페이지 처리
 %>
 <!doctype html>
 <html lang="en">
@@ -160,18 +95,19 @@
 
         </div>
         <div class="detail_file_box">
-            <c:forEach var="data" items="${files}">
+            <c:forEach var="file" items="${files}">
                 <div class="file">
-                    <i class="fa-solid fa-download"></i> <a href="downloadAction.jsp?file=${data[1]}">${data[0]}</a>
+                    <i class="fa-solid fa-download"></i> <a
+                        href="downloadAction.jsp?file=${file.urlEncodedFileRealName}">${file.fileName}</a>
                 </div>
             </c:forEach>
 
         </div>
         <div class="detail_comment_box">
             <div class="comment">
-                <c:forEach var="data" items="${commentList}">
-                    <div id="reg_date">${data.regDate}</div>
-                    <div id="content">${data.content}</div>
+                <c:forEach var="comment" items="${commentList}">
+                    <div id="reg_date">${comment.regDate}</div>
+                    <div id="content">${comment.content}</div>
                     <hr id="comment_bot_line">
                 </c:forEach>
             </div>

@@ -18,6 +18,7 @@ public class BoardInfo {
     public static final String SEARCH_TEXT = "searchText";
     public static final String PAGE = "page";
     public static final String CUR_PAGE = "curPage";
+    public static final String CUSTOM_DATE_FORMAT = "yyyy.MM.dd HH:mm";
 
     public static final String ALL_CATEGORY_VALUE = "all";
     public static final String EMPTY_STRING = "";
@@ -32,6 +33,16 @@ public class BoardInfo {
     private List<Board> boardList;
     private List<String> categoryList;
 
+    private String getCustomFormatDateString(String columnName, ResultSet rs) throws SQLException {
+        LocalDateTime dateTime = rs.getObject(columnName, LocalDateTime.class);
+
+        if (dateTime == null) {
+            return "-";
+        }
+
+        return dateTime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
+    }
+
     private List<Board> getBoardList(Connection con, FilterCondition fc, String completeSql) throws SQLException {
         PreparedStatement ps = con.prepareStatement(completeSql);
 
@@ -44,7 +55,7 @@ public class BoardInfo {
 
         List<Board> boardList = new ArrayList<>();
         while (rs.next()) {
-            boardList.add(createBoard(rs));
+            boardList.add(createBoard(rs, false));
         }
 
         ps.close();
@@ -53,34 +64,24 @@ public class BoardInfo {
         return boardList;
     }
 
-    private Board createBoard(ResultSet rs) throws SQLException {
+    private Board createBoard(ResultSet rs, boolean viewsUpdate) throws SQLException {
         String regDate = getCustomFormatDateString("REG_DATETIME", rs);
         String editDate = getCustomFormatDateString("EDIT_DATETIME", rs);
+        int views = rs.getInt("VIEWS");
+        if (viewsUpdate) views += 1;
 
         return Board.builder().
                 boardId(rs.getLong("BOARD_ID")).
                 category(rs.getString("CATEGORY")).
                 regDate(regDate).
                 editDate(editDate).
-                views(rs.getInt("VIEWS")).
+                views(views).
                 writer(rs.getString("WRITER")).
                 password(rs.getString("PASSWORD")).
                 title(rs.getString("TITLE")).
                 content(rs.getString("CONTENT")).
                 fileExist(rs.getBoolean("FILE_EXIST")).
                 build();
-    }
-
-    private String getCustomFormatDateString(String columnName, ResultSet rs) throws SQLException {
-        LocalDateTime dateTime = rs.getObject(columnName, LocalDateTime.class);
-
-        if (dateTime == null) {
-            return "-";
-        }
-
-        final String CUSTOM_DATE_FORMAT = "yyyy.MM.dd HH:mm";
-
-        return dateTime.format(DateTimeFormatter.ofPattern(CUSTOM_DATE_FORMAT));
     }
 
     private String getCompleteSql(String searchConditionSql, int needPageNum, int pageSizeLimit) {
@@ -135,7 +136,23 @@ public class BoardInfo {
         return sql;
     }
 
-    public void queryBoardData(Connection con, FilterCondition fc) throws SQLException {
+    public Board querySingleBoard(Connection con, String boardId) throws SQLException {
+        Statement st = con.createStatement();
+
+        String sql = "select * from board where BOARD_ID = " + boardId;
+
+        ResultSet rs = st.executeQuery(sql);
+        rs.next();
+
+        Board findedBoard = createBoard(rs, true);
+
+        st.close();
+        rs.close();
+
+        return findedBoard;
+    }
+
+    public void queryBoardList(Connection con, FilterCondition fc) throws SQLException {
         String searchConditionSql = getSearchConditionSql(fc);
         String countSql = getCountSqlFromSearchSql(searchConditionSql);
 

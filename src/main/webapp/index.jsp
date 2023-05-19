@@ -14,7 +14,7 @@
         BoardInfo boardInfo = new BoardInfo();
 
         boardInfo.queryCategoryList(con);
-        boardInfo.queryBoardData(con, fc);
+        boardInfo.queryBoardList(con, fc);
         request.getSession().setAttribute("curPage", boardInfo.getNeedPageNum());
 
         pageContext.setAttribute("categoryList", boardInfo.getCategoryList());
