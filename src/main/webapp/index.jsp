@@ -15,17 +15,6 @@
     String endDayParam = request.getParameter("reg_end_date");
     String categoryParam = request.getParameter("category");
     String searchTextParam = request.getParameter("searchText");
-    String pageParam = request.getParameter("page");
-    int curPage = 1;
-    if (pageParam != null) {
-        try {
-            int tempPage = Integer.parseInt(pageParam);
-            if (0 < tempPage && tempPage <= 1000_000) {
-                curPage = tempPage;
-            }
-        } catch (NumberFormatException ignored) {
-        }
-    }
 
     String startDayFilter;
     String endDayFilter;
@@ -46,6 +35,7 @@
         if (!searchTextParam.isEmpty()) {
             searchTextFilter = searchTextParam;
         }
+        request.getSession().setAttribute("curPage", 1);
     }
     //검색 버튼 안누르고 조회하는 경우
     else {
@@ -96,6 +86,40 @@
 
         String countSql = "select count(*) as cnt " + sql.substring(9);
 
+        PreparedStatement countStatement = connection.prepareStatement(countSql);
+        //시간 추가 -> 해야지만 검색이 가능함
+        countStatement.setString(1, startDayFilter + " 00:00:00");
+        countStatement.setString(2, endDayFilter + " 23:59:59");
+        
+        resultSet = countStatement.executeQuery();
+        resultSet.next();
+
+        //전체 게시글 수 조회
+        int boardCount = resultSet.getInt("cnt");
+        //가장 작아도 1페이지는 항상 나와야 하므로 추가.
+        int totalPage = Math.max(1, (int) Math.ceil(boardCount / 10d));
+
+        int curPage = 1;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            try {
+                int tempPage = Integer.parseInt(pageParam);
+                if (0 < tempPage && tempPage <= 1000_000) {
+                    curPage = tempPage;
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        } else {
+            Object tempPageParam = request.getSession().getAttribute("curPage");
+            if (tempPageParam != null) {
+                curPage = (Integer) tempPageParam;
+            }
+        }
+
+        if (curPage > totalPage) {
+            curPage = totalPage;
+        }
+
         int pageSizeLimit = 10;
         sql += " order by REG_DATETIME desc limit " + pageSizeLimit;
 
@@ -109,9 +133,9 @@
         //시간 추가 -> 해야지만 검색이 가능함
         searchStatement.setString(1, startDayFilter + " 00:00:00");
         searchStatement.setString(2, endDayFilter + " 23:59:59");
-        resultSet = searchStatement.executeQuery();
 
-        System.out.println(searchStatement);
+
+        resultSet = searchStatement.executeQuery();
 
         final String CUSTOM_DATE_FORMAT = "yyyy.MM.dd HH:mm";
 
@@ -141,18 +165,6 @@
                             build());
         }
 
-        PreparedStatement countStatement = connection.prepareStatement(countSql);
-        //시간 추가 -> 해야지만 검색이 가능함
-        countStatement.setString(1, startDayFilter + " 00:00:00");
-        countStatement.setString(2, endDayFilter + " 23:59:59");
-
-        resultSet = countStatement.executeQuery();
-        resultSet.next();
-
-        //전체 게시글 수 조회
-        int boardCount = resultSet.getInt("cnt");
-        int totalPage = (int) Math.ceil(boardCount / 10d);
-
         int prevPage = curPage == 1 ? 1 : curPage - 1;
         int nextPage = curPage == totalPage ? totalPage : curPage + 1;
 
@@ -165,8 +177,9 @@
         pageContext.setAttribute("categoryList", categoryList);
         pageContext.setAttribute("boardList", boardList);
         pageContext.setAttribute("boardCount", boardCount);
-        pageContext.setAttribute("totalPage", totalPage);
         pageContext.setAttribute("curPage", curPage);
+        request.getSession().setAttribute("curPage", curPage);
+        pageContext.setAttribute("totalPage", totalPage);
         pageContext.setAttribute("prevPage", prevPage);
         pageContext.setAttribute("nextPage", nextPage);
         pageContext.setAttribute("pageLimitStart", pageLimitStart);
@@ -266,7 +279,7 @@
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                     <li class="page-item">
-                        <a aria-label="Previous" class="page-link" href="index.jsp">
+                        <a aria-label="Previous" class="page-link" href="index.jsp?page=1">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
