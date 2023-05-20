@@ -51,7 +51,7 @@
 
 ## ERD (erdCloud 사용)
 
-- 완성되면 업로드 예정 - 이미지 업로드 하기.
+![ERD](https://github.com/Denia-park/eBrainSoft-java-portfolio-study/assets/80137359/671189ff-0300-48e3-9149-097864dd39b0)
 - [링크](https://www.erdcloud.com/d/3z7DMGmnur8NzHqGE)
 
 ---
