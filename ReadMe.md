@@ -149,7 +149,7 @@
 ### 공통
 
 - [X] ~~사용한 JDBC Connection들을 close 해주기.~~
-- [ ] refactoring 진행
+- [X] ~~refactoring 진행~~
 
 ---
 
