@@ -1,43 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="ebrainsoft.model.Board" %>
-<%@ page import="java.util.List" %>
-<%@ page import="ebrainsoft.connection.MySqlConnection" %>
-<%@ page import="java.sql.Connection" %>
-<%@ page import="ebrainsoft.model.Comment" %>
-<%@ page import="ebrainsoft.week1.util.FileUtil" %>
-<%@ page import="ebrainsoft.model.BoardInfo" %>
-<%@ page import="ebrainsoft.model.FileInfo" %>
-<%@ page import="ebrainsoft.week1.util.CommentUtil" %>
-<%@ page import="ebrainsoft.week1.util.BoardUtil" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%
-    String boardId = request.getParameter("id");
-
-    try {
-        Connection con = MySqlConnection.getConnection();
-
-        BoardUtil boardUtil = new BoardUtil();
-        Board findBoard = boardUtil.querySingleBoard(con, boardId);
-
-        FileUtil fileUtil = new FileUtil();
-        List<FileInfo> fileInfoList = fileUtil.queryFileList(con, boardId);
-
-        CommentUtil commentUtil = new CommentUtil();
-        List<Comment> commentList = commentUtil.queryCommentList(con, boardId);
-
-        boardUtil.queryUpdateBoardView(con, findBoard);
-
-        pageContext.setAttribute("files", fileInfoList);
-        pageContext.setAttribute("board", findBoard);
-        pageContext.setAttribute("commentList", commentList);
-        pageContext.setAttribute("status", request.getParameter("status"));
-        pageContext.setAttribute("type", request.getParameter("type"));
-
-        con.close();
-    } catch (Exception e) {
-        throw new RuntimeException(e);
-    }
-%>
 <!doctype html>
 <html lang="en">
     <head>
@@ -94,7 +56,7 @@
             <c:forEach var="file" items="${files}">
                 <div class="file">
                     <i class="fa-solid fa-download"></i> <a
-                        href="downloadAction.jsp?file=${file.urlEncodedFileRealName}">${file.fileName}</a>
+                        href="downloadAction?file=${file.urlEncodedFileRealName}">${file.fileName}</a>
                 </div>
             </c:forEach>
 
@@ -107,7 +69,7 @@
                     <hr id="comment_bot_line">
                 </c:forEach>
             </div>
-            <form action="postCommentAction.jsp?id=${board.boardId}" method="post"
+            <form action="postCommentAction?id=${board.boardId}" method="post"
                   class="comment_input_box">
                 <input id="input_box" name="content" placeholder="댓글을 입력해주세요" type="text">
                 <button type="submit" id="submit_btn">등록</button>
@@ -117,7 +79,7 @@
         <hr id="comment_box_bot_line"/>
 
         <div class="detail_bot_button_box">
-            <button id="list_btn" onclick="location.href='index.jsp'">목록</button>
+            <button id="list_btn" onclick="location.href='index'">목록</button>
             <button id="edit_btn" onclick="openPopup('edit')">수정</button>
             <button id="delete_btn" onclick="openPopup('delete')">삭제</button>
         </div>
@@ -176,7 +138,7 @@
             }
 
             function doAction(actionType) {
-                location.href = "doPasswordCheckAction.jsp?id=" + ${board.boardId} +
+                location.href = "doPasswordCheckAction?id=" + ${board.boardId} +
                     "&pw=" + encode(btoa($('#password').val())) + "&type=" + actionType;
             }
         </script>

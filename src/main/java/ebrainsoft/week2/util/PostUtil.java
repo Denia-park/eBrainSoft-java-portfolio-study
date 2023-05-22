@@ -75,22 +75,22 @@ public class PostUtil {
         return boardId;
     }
 
-    public int queryPostBoard(Connection con, MultipartRequest mr) throws SQLException, NoSuchAlgorithmException {
-        FileUtil fileUtil = new FileUtil();
-        List<String> fileNameList = fileUtil.convertFileNameList(mr.getFileNames());
-
-        int result = postBoard(con, mr, fileNameList);
-
-        if (result <= 0) {
-            return -1;
-        }
-
-        result = fileUtil.queryPostFile(con, mr, fileNameList, getBoardId(con));
-
-        if (result <= 0) {
-            return -1;
-        }
-
-        return result;
-    }
+//    public int queryPostBoard(Connection con, MultipartRequest mr) throws SQLException, NoSuchAlgorithmException {
+//        FileUtil fileUtil = new FileUtil();
+//        List<String> fileNameList = fileUtil.convertFileNameList(mr.getFileNames());
+//
+//        int result = postBoard(con, mr, fileNameList);
+//
+//        if (result <= 0) {
+//            return -1;
+//        }
+//
+//        result = fileUtil.queryPostFile(con, mr, fileNameList, getBoardId(con));
+//
+//        if (result <= 0) {
+//            return -1;
+//        }
+//
+//        return result;
+//    }
 }

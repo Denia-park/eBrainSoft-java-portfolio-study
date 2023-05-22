@@ -15,7 +15,7 @@
         <link href="../../style.css" rel="stylesheet">
     </head>
     <body>
-        <h1><a class="title_link" href="index.jsp">자유 게시판</a></h1>
+        <h1><a class="title_link" href="index">자유 게시판</a></h1>
 
         <form action="" class="filter" method="get">
             <div class="reg_date">
@@ -70,10 +70,10 @@
                     <c:choose>
                         <c:when test="${data.title.length() > 80}">
                             <td><a class="title_link"
-                                   href="detail.jsp?id=${data.boardId}">${(data.title.substring(0,81))}...</a></td>
+                                   href="detail?id=${data.boardId}">${(data.title.substring(0,81))}...</a></td>
                         </c:when>
                         <c:otherwise>
-                            <td><a class="title_link" href="detail.jsp?id=${data.boardId}">${data.title}</a></td>
+                            <td><a class="title_link" href="detail?id=${data.boardId}">${data.title}</a></td>
                         </c:otherwise>
                     </c:choose>
                     <td>${data.writer}</td>
@@ -89,28 +89,28 @@
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                     <li class="page-item">
-                        <a aria-label="Previous" class="page-link" href="index.jsp?page=1">
+                        <a aria-label="Previous" class="page-link" href="index?page=1">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <li class="page-item">
-                        <a aria-label="Previous" class="page-link" href="index.jsp?page=${prevPage}">
+                        <a aria-label="Previous" class="page-link" href="index?page=${prevPage}">
                             <span aria-hidden="true"><</span>
                         </a>
                     </li>
                     <c:forEach var="num" begin="${pageLimitStart}" end="${pageLimitEnd}" step="1">
                         <li class="page-item">
                             <a class="page-link" <c:if test="${num == curPage}"> id="page_select"</c:if>
-                               href="index.jsp?page=${num}">${num}</a>
+                               href="index?page=${num}">${num}</a>
                         </li>
                     </c:forEach>
                     <li class="page-item">
-                        <a aria-label="Next" class="page-link" href="index.jsp?page=${nextPage}">
+                        <a aria-label="Next" class="page-link" href="index?page=${nextPage}">
                             <span aria-hidden="true">></span>
                         </a>
                     </li>
                     <li class="page-item">
-                        <a aria-label="Next" class="page-link" href="index.jsp?page=${totalPage}">
+                        <a aria-label="Next" class="page-link" href="index?page=${totalPage}">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -118,7 +118,7 @@
             </nav>
         </div>
 
-        <button class="button filter_height align_left" type="button" onclick="location.href='post.jsp'">등록</button>
+        <button class="button filter_height align_left" type="button" onclick="location.href='post'">등록</button>
 
         <script crossorigin="anonymous"
                 integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
