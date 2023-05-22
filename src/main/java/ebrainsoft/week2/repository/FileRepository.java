@@ -16,6 +16,11 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class FileRepository {
+    /**
+     * 주어진 Enumeration fileNames를 List of String 형태로 변환
+     *
+     * @return List of String
+     */
     public static List<String> convertFileNameList(Enumeration fileNames) {
         List<String> fileNameList = new ArrayList<>();
         while (fileNames.hasMoreElements()) {
@@ -29,6 +34,12 @@ public class FileRepository {
         return fileNameList;
     }
 
+    /**
+     * 주어진 boardId를 기반으로 첨부된 FileInfo의 List를 반환
+     *
+     * @return List of FileInfo
+     * @throws SQLException
+     */
     public static List<FileInfo> findAllFileById(String boardId) throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
@@ -60,6 +71,9 @@ public class FileRepository {
         }
     }
 
+    /**
+     * 잘못저장된 파일들을 삭제
+     */
     public static void deleteWrongFiles(MultipartRequest multipartRequest, String directoty) {
         Enumeration fileNames = multipartRequest.getFileNames();
 
@@ -73,6 +87,13 @@ public class FileRepository {
             file.delete();
         }
     }
+
+    /**
+     * 주어진 deleteFileNameList를 기반으로 DB와 서버에서 파일들을 삭제
+     *
+     * @return 성공하면 1, 실패하면 0
+     * @throws SQLException
+     */
 
     public static int deleteFileList(String boardId, String directoty, List<String> deleteFileNameList) throws SQLException {
         Connection con = null;
@@ -106,6 +127,12 @@ public class FileRepository {
         }
     }
 
+    /**
+     * 주어진 boardId를 기반으로 첨부 파일 저장
+     *
+     * @return 성공하면 1, 실패하면 0
+     * @throws SQLException
+     */
     public static int saveFile(MultipartRequest mr, List<String> fileNameList, String boardId) throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
