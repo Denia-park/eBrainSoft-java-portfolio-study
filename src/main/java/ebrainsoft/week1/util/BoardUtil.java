@@ -1,9 +1,9 @@
 package ebrainsoft.week1.util;
 
 import com.oreilly.servlet.MultipartRequest;
-import ebrainsoft.week1.model.Board;
-import ebrainsoft.week1.model.BoardInfo;
-import ebrainsoft.week1.model.FilterCondition;
+import ebrainsoft.model.Board;
+import ebrainsoft.model.BoardInfo;
+import ebrainsoft.model.FilterCondition;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;

@@ -1,4 +1,4 @@
-package ebrainsoft.week2.model;
+package ebrainsoft.model;
 
 import lombok.Getter;
 

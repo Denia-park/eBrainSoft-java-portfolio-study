@@ -1,7 +1,7 @@
 package ebrainsoft.week1.util;
 
-import ebrainsoft.week1.model.BoardInfo;
-import ebrainsoft.week1.model.FilterCondition;
+import ebrainsoft.model.BoardInfo;
+import ebrainsoft.model.FilterCondition;
 import lombok.Getter;
 
 import javax.servlet.http.HttpServletRequest;

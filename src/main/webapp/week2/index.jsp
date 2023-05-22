@@ -1,12 +1,12 @@
-<%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
+<%@ page import="ebrainsoft.connection.MySqlConnection" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="ebrainsoft.week1.util.SearchUtil" %>
-<%@ page import="ebrainsoft.week1.model.FilterCondition" %>
-<%@ page import="ebrainsoft.week1.model.BoardInfo" %>
+<%@ page import="ebrainsoft.model.FilterCondition" %>
+<%@ page import="ebrainsoft.model.BoardInfo" %>
 <%@ page import="ebrainsoft.week1.util.CategoryUtil" %>
 <%@ page import="java.util.List" %>
 <%@ page import="ebrainsoft.week1.util.BoardUtil" %>
-<%@ page import="ebrainsoft.week1.model.Board" %>
+<%@ page import="ebrainsoft.model.Board" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>

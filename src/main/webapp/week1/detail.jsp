@@ -1,12 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="ebrainsoft.week1.model.Board" %>
+<%@ page import="ebrainsoft.model.Board" %>
 <%@ page import="java.util.List" %>
-<%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
+<%@ page import="ebrainsoft.connection.MySqlConnection" %>
 <%@ page import="java.sql.Connection" %>
-<%@ page import="ebrainsoft.week1.model.Comment" %>
+<%@ page import="ebrainsoft.model.Comment" %>
 <%@ page import="ebrainsoft.week1.util.FileUtil" %>
-<%@ page import="ebrainsoft.week1.model.BoardInfo" %>
-<%@ page import="ebrainsoft.week1.model.FileInfo" %>
+<%@ page import="ebrainsoft.model.BoardInfo" %>
+<%@ page import="ebrainsoft.model.FileInfo" %>
 <%@ page import="ebrainsoft.week1.util.CommentUtil" %>
 <%@ page import="ebrainsoft.week1.util.BoardUtil" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>

@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
+<%@ page import="ebrainsoft.connection.MySqlConnection" %>
 <%@ page import="java.sql.Connection" %>
 <%@ page import="ebrainsoft.week1.util.CategoryUtil" %>
 <%@ page import="java.util.List" %>

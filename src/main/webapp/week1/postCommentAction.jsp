@@ -1,4 +1,4 @@
-<%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
+<%@ page import="ebrainsoft.connection.MySqlConnection" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="ebrainsoft.week1.util.CommentUtil" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>

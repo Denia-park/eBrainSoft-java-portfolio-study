@@ -1,4 +1,4 @@
-<%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
+<%@ page import="ebrainsoft.connection.MySqlConnection" %>
 <%@ page import="java.sql.Connection" %>
 <%@ page import="com.oreilly.servlet.MultipartRequest" %>
 <%@ page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy" %>

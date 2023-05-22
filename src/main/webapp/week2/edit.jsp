@@ -1,12 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
-<%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
+<%@ page import="ebrainsoft.connection.MySqlConnection" %>
 <%@ page import="java.sql.Connection" %>
-<%@ page import="ebrainsoft.week1.model.Board" %>
+<%@ page import="ebrainsoft.model.Board" %>
 <%@ page import="ebrainsoft.week1.util.BoardUtil" %>
 <%@ page import="ebrainsoft.week1.util.FileUtil" %>
-<%@ page import="ebrainsoft.week1.model.FileInfo" %>
+<%@ page import="ebrainsoft.model.FileInfo" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     String boardId = request.getParameter("id");

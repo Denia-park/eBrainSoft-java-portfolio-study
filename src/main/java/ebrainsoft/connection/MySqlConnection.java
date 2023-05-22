@@ -1,4 +1,4 @@
-package ebrainsoft.week2.connection;
+package ebrainsoft.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

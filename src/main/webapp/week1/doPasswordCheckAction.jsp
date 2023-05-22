@@ -1,4 +1,4 @@
-<%@ page import="ebrainsoft.week1.connection.MySqlConnection" %>
+<%@ page import="ebrainsoft.connection.MySqlConnection" %>
 <%@ page import="java.sql.Connection" %>
 <%@ page import="org.springframework.util.Base64Utils" %>
 <%@ page import="ebrainsoft.week1.util.BoardUtil" %>
