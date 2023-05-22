@@ -13,6 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommentRepository {
+    /**
+     * boardId를 기반으로 해당하는 게시글의 모든 Comment 검색 후 반환
+     *
+     * @return List of Comment
+     * @throws SQLException
+     */
     public static List<Comment> findAllCommentById(String boardId) throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
@@ -49,6 +55,12 @@ public class CommentRepository {
         }
     }
 
+    /**
+     * 주어진 boardId에 해당하는 게시글에 Comment를 추가.
+     *
+     * @return 추가에 성공하면 1, 실패하면 0
+     * @throws SQLException
+     */
     public static int saveComment(String boardId, String content) throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;

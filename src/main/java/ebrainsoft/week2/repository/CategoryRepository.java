@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryRepository {
+    /**
+     * DB에 존재하는 모든 Category를 검색해서 가져온다.
+     *
+     * @return List of String
+     * @throws Exception
+     */
     public static List<String> findAllCategory() throws Exception {
         Connection con = null;
         PreparedStatement ps = null;

@@ -180,6 +180,10 @@
     - [ ] 요청마다 각 해당하는 컨트롤러를 호출해서 처리하도록 하기.
 - [ ] Log 남기기
 - [ ] 가능하면 메서드마다 주석 (JavaDoc) 달아주기
+    - [X] ~~BoardRepository~~
+    - [X] ~~CategoryRepository~~
+    - [X] ~~CommentRepository~~
+    - [X] ~~FileRepository~~
 - [ ] Header 사용해보기
 
 ### 게시판 - 목록
