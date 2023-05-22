@@ -41,4 +41,6 @@ out/
 application.properties
 
 ### upload ###
-WEB-INF
+**/upload/
+**/lib/
+
