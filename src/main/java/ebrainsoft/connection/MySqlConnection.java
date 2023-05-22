@@ -13,7 +13,7 @@ public class MySqlConnection {
         Connection conn = null;
 
         try {
-            //STEP 2: Register JDBC driver
+            //STEP 2: Register JDBC driver -> ClassLoader에 해당 클래스를 올린다. -> ClassLoader에 올리는 것으로 필요한 내용들이 처리가 된다.
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 

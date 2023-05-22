@@ -1,6 +1,6 @@
 package ebrainsoft.week2.util;
 
-import ebrainsoft.week2.model.Comment;
+import ebrainsoft.model.Comment;
 
 import java.sql.*;
 import java.time.LocalDateTime;

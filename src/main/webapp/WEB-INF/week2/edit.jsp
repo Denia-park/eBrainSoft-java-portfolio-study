@@ -46,12 +46,12 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1" name="viewport">
         <title>자유 게시판</title>
-        <script src="../urlsafe-base64.js"></script>
-        <script src="../validator.js"></script>
+        <script src="../../urlsafe-base64.js"></script>
+        <script src="../../validator.js"></script>
         <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
         <script src="https://kit.fontawesome.com/1b3dd0a9c0.js" crossorigin="anonymous"></script>
         <!-- 공통 CSS -->
-        <link href="../style.css" rel="stylesheet">
+        <link href="../../style.css" rel="stylesheet">
     </head>
     <body>
         <div>

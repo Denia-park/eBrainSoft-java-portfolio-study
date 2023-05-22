@@ -48,10 +48,10 @@
               href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
               rel="stylesheet">
-        <link href="../style.css" rel="stylesheet">
+        <link href="../../style.css" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
         <script src="https://kit.fontawesome.com/1b3dd0a9c0.js" crossorigin="anonymous"></script>
-        <script src="../urlsafe-base64.js"></script>
+        <script src="../../urlsafe-base64.js"></script>
     </head>
     <body>
         <div class="detail_info_box">

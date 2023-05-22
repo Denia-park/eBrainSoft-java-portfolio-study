@@ -27,10 +27,10 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1" name="viewport">
         <title>자유 게시판</title>
-        <script src="../validator.js"></script>
+        <script src="../../validator.js"></script>
         <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
         <!-- 공통 CSS -->
-        <link href="../style.css" rel="stylesheet">
+        <link href="../../style.css" rel="stylesheet">
     </head>
     <body>
         <h2>게시글 작성</h2>

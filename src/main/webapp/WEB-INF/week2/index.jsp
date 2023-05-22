@@ -1,53 +1,6 @@
-<%@ page import="ebrainsoft.connection.MySqlConnection" %>
-<%@ page import="java.sql.*" %>
-<%@ page import="ebrainsoft.week1.util.SearchUtil" %>
-<%@ page import="ebrainsoft.model.FilterCondition" %>
-<%@ page import="ebrainsoft.model.BoardInfo" %>
-<%@ page import="ebrainsoft.week1.util.CategoryUtil" %>
-<%@ page import="java.util.List" %>
-<%@ page import="ebrainsoft.week1.util.BoardUtil" %>
-<%@ page import="ebrainsoft.model.Board" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%
-    FilterCondition fc = SearchUtil.updateFilterConditionIfSearchConditionExist(request);
-
-    try {
-        Connection con = MySqlConnection.getConnection();
-
-        CategoryUtil categoryUtil = new CategoryUtil();
-        List<String> categoryList = categoryUtil.queryCategoryList(con);
-
-        BoardUtil boardUtil = new BoardUtil();
-        int totalCount = boardUtil.queryTotalCount(con, fc);
-        int totalPage = boardUtil.getTotalPage(totalCount);
-        int needPageNum = fc.getNeedPageNum(totalPage);
-        List<Board> boardList = boardUtil.queryBoardList(con, fc, needPageNum);
-
-        BoardInfo boardInfo = new BoardInfo(totalCount, totalPage, needPageNum, boardList);
-
-        request.getSession().setAttribute("curPage", boardInfo.getNeedPageNum());
-
-        pageContext.setAttribute("categoryList", categoryList);
-        pageContext.setAttribute("searchCategory", fc.getCategoryFilter());
-        pageContext.setAttribute("searchText", fc.getSearchTextFilter());
-        pageContext.setAttribute("boardList", boardInfo.getBoardList());
-        pageContext.setAttribute("totalCount", boardInfo.getTotalCount());
-
-        pageContext.setAttribute("curPage", boardInfo.getNeedPageNum());
-        pageContext.setAttribute("totalPage", boardInfo.getTotalPage());
-        pageContext.setAttribute("prevPage", boardInfo.getPrevPage());
-        pageContext.setAttribute("nextPage", boardInfo.getNextPage());
-
-        pageContext.setAttribute("pageLimitStart", boardInfo.getPageLimitStart());
-        pageContext.setAttribute("pageLimitEnd", boardInfo.getPageLimitEnd(boardInfo.getPageLimitStart()));
-
-        con.close();
-    } catch (Exception e) {
-        throw new RuntimeException(e);
-    }
-%>
 <!doctype html>
 <html lang="en">
     <head>
@@ -59,7 +12,7 @@
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
               rel="stylesheet">
         <script src="https://kit.fontawesome.com/1b3dd0a9c0.js" crossorigin="anonymous"></script>
-        <link href="../style.css" rel="stylesheet">
+        <link href="../../style.css" rel="stylesheet">
     </head>
     <body>
         <h1><a class="title_link" href="index.jsp">자유 게시판</a></h1>
@@ -70,24 +23,24 @@
                     등록일
                 </span>
                 <input class="filter_height text_align_center" id="reg_start_date" name="reg_start_date" type="date"
-                       value=<%=fc.getStartDayFilter()%>>
+                       value=${fc.startDayFilter}>
                 -
                 <input class="filter_height text_align_center" id="reg_end_date" name="reg_end_date" type="date"
-                       value=<%=fc.getEndDayFilter()%>>
+                       value=${fc.endDayFilter}>
             </div>
             <div class="search">
                 <select class="filter_height" id="category" name="searchCategory">
                     <option value="all">전체 카테고리</option>
                     <c:forEach var="data" items="${categoryList}">
                         <option
-                                <c:if test='${searchCategory.equals(data)}'>selected</c:if>
+                                <c:if test='${fc.categoryFilter.equals(data)}'>selected</c:if>
                                 value="${data}">${data}
                         </option>
                     </c:forEach>
                 </select>
                 <input class="filter_height" id="search_box" name="searchText"
                        placeholder="검색어를 입력해주세요. (제목 + 작성자 + 내용)"
-                       type="text" value="${searchText}">
+                       type="text" value="${fc.searchTextFilter}">
                 <button class="button filter_height" type="submit">검색
                 </button>
             </div>

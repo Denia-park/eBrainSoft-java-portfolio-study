@@ -1,4 +1,4 @@
-package ebrainsoft.week1.util;
+package ebrainsoft.util;
 
 import ebrainsoft.model.BoardInfo;
 import ebrainsoft.model.FilterCondition;
@@ -82,7 +82,13 @@ public class SearchUtil {
 
     private static Integer updateCurPage(String pageParam) {
         if (isDigit(pageParam)) {
-            return Integer.parseInt(pageParam);
+            int parseInt = Integer.parseInt(pageParam);
+
+            if (parseInt < 1) {
+                return BoardInfo.DEFAULT_START_PAGE_NUM;
+            }
+
+            return parseInt;
         }
 
         return BoardInfo.DEFAULT_START_PAGE_NUM;

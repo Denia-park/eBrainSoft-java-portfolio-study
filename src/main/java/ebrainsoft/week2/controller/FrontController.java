@@ -19,15 +19,15 @@ import java.util.concurrent.ConcurrentHashMap;
         maxFileSize = 1024 * 1024 * 5,
         maxRequestSize = 1024 * 1024 * 10,
         fileSizeThreshold = 1024 * 1024 * 5)
-@WebServlet("/*")
+@WebServlet("/week2/*")
 public class FrontController extends HttpServlet {
     public Map<String, Service> serviceMapping() {
         Map<String, Service> map = new ConcurrentHashMap<>();
 
-        map.put("/index", new IndexService());
-        map.put("/post", new PostService());
-        map.put("/edit", new EditService());
-        map.put("/detail", new DetailService());
+        map.put("/week2/index", new IndexService());
+        map.put("/week2/post", new PostService());
+        map.put("/week2/edit", new EditService());
+        map.put("/week2/detail", new DetailService());
 
         return map;
     }
@@ -37,9 +37,10 @@ public class FrontController extends HttpServlet {
         req.setCharacterEncoding("utf-8");
         resp.setContentType("text/html; charset=utf-8");
 
-        String path = req.getServletPath();
+        String uri = req.getRequestURI();
+        Service service = serviceMapping().get(uri);
+        log.info("uri = {}", uri);
 
-        Service service = serviceMapping().get(path);
         if (service != null) {
             service.doService(req, resp);
         }

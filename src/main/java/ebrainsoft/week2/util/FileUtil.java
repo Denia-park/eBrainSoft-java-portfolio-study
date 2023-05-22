@@ -1,7 +1,7 @@
 package ebrainsoft.week2.util;
 
 import com.oreilly.servlet.MultipartRequest;
-import ebrainsoft.week2.model.FileInfo;
+import ebrainsoft.model.FileInfo;
 
 import java.io.File;
 import java.net.URLEncoder;

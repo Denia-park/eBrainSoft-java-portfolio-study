@@ -1,6 +1,6 @@
 <%@ page import="ebrainsoft.connection.MySqlConnection" %>
 <%@ page import="java.sql.*" %>
-<%@ page import="ebrainsoft.week1.util.SearchUtil" %>
+<%@ page import="ebrainsoft.util.SearchUtil" %>
 <%@ page import="ebrainsoft.model.FilterCondition" %>
 <%@ page import="ebrainsoft.model.BoardInfo" %>
 <%@ page import="ebrainsoft.week1.util.CategoryUtil" %>
