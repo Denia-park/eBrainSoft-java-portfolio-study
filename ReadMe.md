@@ -52,6 +52,7 @@
 ## ERD (erdCloud 사용)
 
 ![ERD](https://github.com/Denia-park/eBrainSoft-java-portfolio-study/assets/80137359/671189ff-0300-48e3-9149-097864dd39b0)
+
 - [링크](https://www.erdcloud.com/d/3z7DMGmnur8NzHqGE)
 
 ---
@@ -168,6 +169,38 @@
 
 </details>
 
+<details>
+    <summary>2주차</summary>
+
+### 공통
+
+- [ ] command 패턴 적용을 위해 Interface 만들기
+- [ ] 프론트 컨트롤러 패턴을 적용하기 위해 프론트 컨트롤러 만들기
+    - [ ] 모든 요청을 다 받도록 하기.
+    - [ ] 요청마다 각 해당하는 컨트롤러를 호출해서 처리하도록 하기.
+
+### 게시판 - 목록
+
+- [ ] content
+
+### 게시판 - 보기
+
+- [ ] content
+
+### 비밀번호 확인 팝업
+
+- [ ] content
+
+### 게시판 - 등록
+
+- [ ] content
+
+### 게시판 - 수정
+
+- [ ] content
+
+</details>
+
 ---
 
 ## 구현하면서 힘들었던 점
@@ -186,6 +219,13 @@
     - JSTL을 써서 그나마 쉽게 코딩을 했지 이거라도 없었으면 더 힘들었을 것 같다.
         - ${ } 를 쓰려고 하다보니 pageContext에 종속적인 코드가 되어버렸다.
 2. 처음부터 제대로 설계를 하지 않고 코드를 짜면 나중에 리팩터링 할때 지옥을 맛본다 .. ㅠㅠ
+
+</details>
+
+<details>
+    <summary>2주차</summary>
+
+1. content
 
 </details>
 
