@@ -5,6 +5,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import="org.springframework.util.Base64Utils" %>
 <%@ page import="ebrainsoft.week1.util.*" %>
+<%@ page import="ebrainsoft.util.Validator" %>
 
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
@@ -33,13 +34,12 @@
 
         FileUtil fileUtil = new FileUtil();
 
-        Validator validator = new Validator();
-        if (!validator.isAllValidOnEdit(mr)) {
-            fileUtil.deleteWrongFiles(mr, directoty);
-
-            response.sendRedirect("edit.jsp?id=" + boardId + "&status=fail");
-            return;
-        }
+//        if (!Validator.isAllValidOnEdit(mr)) {
+//            fileUtil.deleteWrongFiles(mr, directoty);
+//
+//            response.sendRedirect("edit.jsp?id=" + boardId + "&status=fail");
+//            return;
+//        }
 
         List<String> addFileNameList = fileUtil.convertFileNameList(mr.getFileNames());
 

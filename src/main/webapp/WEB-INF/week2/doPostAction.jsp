@@ -2,7 +2,7 @@
 <%@ page import="java.sql.Connection" %>
 <%@ page import="com.oreilly.servlet.MultipartRequest" %>
 <%@ page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy" %>
-<%@ page import="ebrainsoft.week1.util.Validator" %>
+<%@ page import="ebrainsoft.util.Validator" %>
 <%@ page import="ebrainsoft.week1.util.PostUtil" %>
 
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -16,9 +16,7 @@
         MultipartRequest multipartRequest = new MultipartRequest(request, directoty, maxSize, encoding,
                 new DefaultFileRenamePolicy());
 
-        Validator validator = new Validator();
-
-        if (!validator.isAllValidOnPost(multipartRequest)) {
+        if (!Validator.isAllValidOnPost(multipartRequest)) {
             response.sendRedirect("post.jsp?status=fail");
             return;
         }
