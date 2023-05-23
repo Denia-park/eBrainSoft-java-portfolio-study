@@ -1,26 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="ebrainsoft.connection.MySqlConnection" %>
-<%@ page import="java.sql.Connection" %>
-<%@ page import="ebrainsoft.week1.util.CategoryUtil" %>
-<%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%
-    String status = request.getParameter("status");
-    pageContext.setAttribute("status", status);
-
-    try {
-        Connection con = MySqlConnection.getConnection();
-
-        CategoryUtil categoryUtil = new CategoryUtil();
-        List<String> categoryList = categoryUtil.queryCategoryList(con);
-
-        pageContext.setAttribute("categoryList", categoryList);
-
-        con.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-%>
 <!doctype html>
 <html>
     <head>
@@ -124,7 +103,7 @@
 
         /** 게시판 - 목록 페이지 이동 */
         function doCancel() {
-            location.href = "index.jsp";
+            location.href = "index";
         }
 
         async function doVerify() {
@@ -174,7 +153,7 @@
             formData.append('file2', file2);
             formData.append('file3', file3);
 
-            const response = await fetch('doPostAction.jsp', {
+            const response = await fetch('post', {
                 method: 'POST',
                 body: formData
             });

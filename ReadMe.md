@@ -195,6 +195,7 @@
     - [X] ~~CategoryRepository~~
     - [X] ~~CommentRepository~~
     - [X] ~~FileRepository~~
+    - [X] ~~FileUtil~~
 - [ ] Header 사용해보기
 
 ### 게시판 - 목록
@@ -211,7 +212,7 @@
 
 ### 게시판 - 등록
 
-- [ ] 각 해당하는 서비스로 코드 분리하기
+- [X] ~~각 해당하는 서비스로 코드 분리하기~~
 
 ### 게시판 - 수정
 

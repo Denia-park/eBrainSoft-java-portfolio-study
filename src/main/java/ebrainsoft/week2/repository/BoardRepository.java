@@ -1,13 +1,12 @@
 package ebrainsoft.week2.repository;
 
 import ebrainsoft.connection.MySqlConnection;
-import ebrainsoft.model.Board;
-import ebrainsoft.model.BoardInfo;
-import ebrainsoft.model.FilterCondition;
-import ebrainsoft.model.SearchedBoard;
-import ebrainsoft.week2.util.PostUtil;
+import ebrainsoft.model.*;
+import ebrainsoft.week2.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletRequest;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,6 +19,8 @@ import java.util.List;
 
 @Slf4j
 public class BoardRepository {
+    public static String ALGORITHM_SHA_256 = "SHA-256";
+
     /**
      * 게시글의 조회수를 1만큼 업데이트
      *
@@ -97,7 +98,7 @@ public class BoardRepository {
             rs = ps.executeQuery();
             rs.next();
 
-            return createBoard(rs, true);
+            return createBoardFromResultSet(rs, true);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -132,7 +133,7 @@ public class BoardRepository {
 
             List<Board> boardList = new ArrayList<>();
             while (rs.next()) {
-                boardList.add(createBoard(rs, false));
+                boardList.add(createBoardFromResultSet(rs, false));
             }
 
             return new SearchedBoard(totalSearchedBoardNum, pageSizeLimit, boardList);
@@ -246,7 +247,7 @@ public class BoardRepository {
      * @return Board
      * @throws Exception
      */
-    private static Board createBoard(ResultSet rs, boolean viewsUpdate) throws SQLException {
+    private static Board createBoardFromResultSet(ResultSet rs, boolean viewsUpdate) throws SQLException {
         String regDate = getCustomFormatDateString("REG_DATETIME", rs);
         String editDate = getCustomFormatDateString("EDIT_DATETIME", rs);
 
@@ -295,9 +296,140 @@ public class BoardRepository {
 
         String dbPassword = findBoard.getPassword();
 
-        String encryptedUserPassword = PostUtil.encryptPassword(userPassword, PostUtil.ALGORITHM_SHA_256);
+        String encryptedUserPassword = encryptPassword(userPassword, ALGORITHM_SHA_256);
 
         return dbPassword.equals(encryptedUserPassword);
+    }
+
+    /**
+     * 해당하는 algorithmType에 맞춰서 비밀번호 암호화
+     *
+     * @return 암호화된 String 리턴
+     * @throws NoSuchAlgorithmException
+     */
+    public static String encryptPassword(String password, String algorithmType) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance(algorithmType);
+
+        md.update(password.getBytes());
+
+        StringBuffer sb = new StringBuffer();
+
+        for (byte b : md.digest()) {
+            sb.append(String.format("%02x", b));
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * 매개변수로 전달받은 데이터들을 기반으로 Board 저장 쿼리 실행
+     *
+     * @return 성공하면 0, 실패하면 -1
+     * @throws SQLException
+     */
+    private static int querySaveBoard(Connection con, HttpServletRequest request, boolean isFileExist) throws SQLException {
+        PreparedStatement ps = null;
+
+        try {
+            int views = 0;
+
+            String sql = "insert into board (CATEGORY, REG_DATETIME, VIEWS, WRITER, PASSWORD, TITLE,CONTENT, FILE_EXIST) " +
+                    "values (?,?,?,?,?,?,?,?)";
+
+            ps = con.prepareStatement(sql);
+
+            String curTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+
+            ps.setString(1, request.getParameter("category"));
+            ps.setString(2, curTime);
+            ps.setString(3, String.valueOf(views));
+            ps.setString(4, request.getParameter("writer"));
+            ps.setString(5, encryptPassword(request.getParameter("password"), ALGORITHM_SHA_256));
+            ps.setString(6, request.getParameter("title"));
+            ps.setString(7, request.getParameter("content"));
+            ps.setBoolean(8, isFileExist);
+
+            int result = ps.executeUpdate();
+
+            if (result <= 0) {
+                return -1;
+            }
+
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (ps != null) ps.close();
+        }
+    }
+
+    /**
+     * request를 통해서 Board를 저장
+     *
+     * @return 성공하면 0, 실패하면 -1
+     * @throws SQLException
+     */
+    public static int saveBoard(HttpServletRequest request) throws SQLException {
+        Connection con = null;
+
+        try {
+            con = MySqlConnection.getConnection();
+
+            List<FileInfo> saveFileInfos = FileUtil.saveFilesFromRequest(request);
+
+            boolean isFileExist = !saveFileInfos.isEmpty();
+
+            int result = querySaveBoard(con, request, isFileExist);
+
+            if (result <= 0) {
+                return -1;
+            }
+
+            result = FileRepository.saveFileOnDB(saveFileInfos, getBoardId(con));
+
+            if (result <= 0) {
+                return -1;
+            }
+
+            return result;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (con != null) con.close();
+        }
+    }
+
+    /**
+     * File을 저장하기 위해 방금 저장한 BoardId를 가져온다
+     *
+     * @param con connection이 동일해야 LAST_INSERT_ID() 를 통해서 Id를 받아올수있다.
+     * @return
+     * @throws SQLException
+     */
+    public static String getBoardId(Connection con) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT LAST_INSERT_ID() AS board_id";
+
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            rs.next();
+
+            String boardId = rs.getString("board_id");
+
+            ps.close();
+            rs.close();
+
+            return boardId;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (ps != null) ps.close();
+            if (rs != null) rs.close();
+        }
     }
 
 //    public int updateBoard(MultipartRequest mr, String boardId, boolean isFileExist) throws SQLException {

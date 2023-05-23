@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @MultipartConfig(
-        location = "C:\\tempStudyFile\\attaches",
+        location = "C:\\tempStudyFile\\tempAttaches",
         maxFileSize = 1024 * 1024 * 5,
         maxRequestSize = 1024 * 1024 * 10,
         fileSizeThreshold = 1024 * 1024 * 5)
@@ -38,8 +38,9 @@ public class FrontController extends HttpServlet {
         resp.setContentType("text/html; charset=utf-8");
 
         String uri = req.getRequestURI();
+        String method = req.getMethod();
         Service service = serviceMapping().get(uri);
-        log.info("uri = {}", uri);
+        log.info("uri [{}] = {}", method, uri);
 
         if (service != null) {
             service.doService(req, resp);

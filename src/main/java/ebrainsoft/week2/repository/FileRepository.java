@@ -133,7 +133,7 @@ public class FileRepository {
      * @return 성공하면 1, 실패하면 0
      * @throws SQLException
      */
-    public static int saveFile(MultipartRequest mr, List<String> fileNameList, String boardId) throws SQLException {
+    public static int saveFileOnDB(List<FileInfo> fileInfos, String boardId) throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
 
@@ -144,13 +144,10 @@ public class FileRepository {
 
             ps = con.prepareStatement(sql);
 
-            for (String name : fileNameList) {
-                String fileName = mr.getOriginalFileName(name);
-                String fileRealName = mr.getFilesystemName(name);
-
+            for (FileInfo fileInfo : fileInfos) {
                 ps.setString(1, boardId);
-                ps.setString(2, fileName);
-                ps.setString(3, fileRealName);
+                ps.setString(2, fileInfo.getFileName());
+                ps.setString(3, fileInfo.getFileRealName());
                 int result = ps.executeUpdate();
 
                 if (result <= 0) {
