@@ -69,7 +69,7 @@
                     <hr id="comment_bot_line">
                 </c:forEach>
             </div>
-            <form action="postCommentAction?id=${board.boardId}" method="post"
+            <form action="comment?id=${board.boardId}" method="post"
                   class="comment_input_box">
                 <input id="input_box" name="content" placeholder="댓글을 입력해주세요" type="text">
                 <button type="submit" id="submit_btn">등록</button>

@@ -31,6 +31,7 @@ public class FrontController extends HttpServlet {
         map.put("/week2/edit", new EditService());
         map.put("/week2/detail", new DetailService());
         map.put("/week2/delete", new DeleteService());
+        map.put("/week2/comment", new CommentService());
 
         return map;
     }
