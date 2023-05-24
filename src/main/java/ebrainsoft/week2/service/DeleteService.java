@@ -17,8 +17,7 @@ public class DeleteService implements Service {
 
 
         try {
-            boolean verified = BoardRepository.verifyPassword(boardId, userPassword);
-            if (!verified) {
+            if (!BoardRepository.verifyPassword(boardId, userPassword)) {
                 response.sendRedirect(FAILURE_URL);
                 return;
             }

@@ -139,7 +139,6 @@
 
             async function doAction(requestUrl) {
                 let formData = new FormData();
-                // formData.set('enctype', 'multipart/form-data');
                 formData.append('id', '${board.boardId}');
                 formData.append('pw', $('#password').val());
 
@@ -148,8 +147,12 @@
                         body: formData
                     }
                 );
-                if (response.redirected) {
-                    window.location.href = response.url;
+                if (response) {
+                    const boardId = response.headers.get('BoardId');
+                    let url = response.url;
+                    if (boardId)
+                        url += "?id=" + boardId;
+                    window.location.href = url
                 }
             }
         </script>

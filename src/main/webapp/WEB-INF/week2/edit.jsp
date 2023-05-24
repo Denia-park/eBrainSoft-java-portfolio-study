@@ -1,45 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="java.util.List" %>
-<%@ page import="ebrainsoft.connection.MySqlConnection" %>
-<%@ page import="java.sql.Connection" %>
-<%@ page import="ebrainsoft.model.Board" %>
-<%@ page import="ebrainsoft.week1.util.BoardUtil" %>
-<%@ page import="ebrainsoft.week1.util.FileUtil" %>
-<%@ page import="ebrainsoft.model.FileInfo" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%
-    String boardId = request.getParameter("id");
-    String status = request.getParameter("status");
 
-    try {
-        Connection con = MySqlConnection.getConnection();
-
-        BoardUtil boardUtil = new BoardUtil();
-        Board findBoard = boardUtil.querySingleBoard(con, boardId);
-
-        FileUtil fileUtil = new FileUtil();
-        List<FileInfo> fileInfoList = fileUtil.queryFileList(con, boardId);
-
-        List<String> existFileNameList = new ArrayList<>();
-        for (FileInfo fileInfo : fileInfoList) {
-            existFileNameList.add(fileInfo.getFileRealName());
-        }
-
-        while (fileInfoList.size() != 3) {
-            fileInfoList.add(new FileInfo(null, null, null));
-        }
-
-        pageContext.setAttribute("existFileNameList", existFileNameList);
-        pageContext.setAttribute("files", fileInfoList);
-        pageContext.setAttribute("board", findBoard);
-        pageContext.setAttribute("status", status);
-
-        con.close();
-    } catch (Exception e) {
-        throw new RuntimeException(e);
-    }
-%>
 <!doctype html>
 <html>
     <head>
