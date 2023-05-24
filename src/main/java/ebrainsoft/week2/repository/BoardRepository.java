@@ -186,7 +186,7 @@ public class BoardRepository {
 
             ps = con.prepareStatement(countSql);
             fillNoPagingPreparedStatement(ps, fc);
-            System.out.println(ps);
+            log.info("Index Query : {}", ps);
 
             rs = ps.executeQuery();
             rs.next();
