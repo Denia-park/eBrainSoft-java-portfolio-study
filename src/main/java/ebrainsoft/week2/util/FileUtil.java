@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Slf4j
 public class FileUtil {
-    final static String DIRECTORY = "C:" + File.separator + "tempStudyFile" + File.separator + "save";
+    public static final String DIRECTORY = "C:" + File.separator + "tempStudyFile" + File.separator + "save";
 
     /**
      * File들을 저장하고 저장된 실제 파일들의 이름들을 FileInfo에 담아서 반환한다.

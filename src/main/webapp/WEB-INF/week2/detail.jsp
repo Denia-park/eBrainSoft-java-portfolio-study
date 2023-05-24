@@ -56,7 +56,7 @@
             <c:forEach var="file" items="${files}">
                 <div class="file">
                     <i class="fa-solid fa-download"></i> <a
-                        href="downloadAction?file=${file.urlEncodedFileRealName}">${file.fileName}</a>
+                        href="download?file=${file.urlEncodedFileRealName}">${file.fileName}</a>
                 </div>
             </c:forEach>
 
