@@ -61,7 +61,7 @@ public class BoardRepository {
         try {
             con = MySqlConnection.getConnection();
 
-            String sql = "DELETE FROM board WHERE board_id = ?" + boardId;
+            String sql = "DELETE FROM board WHERE board_id = ?";
 
             ps = con.prepareStatement(sql);
             ps.setString(1, boardId);

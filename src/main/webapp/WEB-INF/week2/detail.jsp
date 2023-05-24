@@ -137,9 +137,20 @@
                 $('#layer_bg').hide();
             }
 
-            function doAction(actionType) {
-                location.href = "doPasswordCheckAction?id=" + ${board.boardId} +
-                    "&pw=" + encode(btoa($('#password').val())) + "&type=" + actionType;
+            async function doAction(requestUrl) {
+                let formData = new FormData();
+                // formData.set('enctype', 'multipart/form-data');
+                formData.append('id', '${board.boardId}');
+                formData.append('pw', $('#password').val());
+
+                const response = await fetch(requestUrl, {
+                        method: 'POST',
+                        body: formData
+                    }
+                );
+                if (response.redirected) {
+                    window.location.href = response.url;
+                }
             }
         </script>
 
