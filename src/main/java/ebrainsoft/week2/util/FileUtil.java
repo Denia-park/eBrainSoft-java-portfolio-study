@@ -96,4 +96,34 @@ public class FileUtil {
         if (!folders.exists())
             folders.mkdirs();
     }
+
+    public static List<String> extractFileNamesFromRequest(HttpServletRequest request, String paramName) throws ServletException, IOException {
+        List<String> fileNames = new ArrayList<>();
+        for (Part part : request.getParts()) {
+            if (!part.getName().contains(paramName)) continue;
+
+            String fileName = part.getSubmittedFileName();
+            if (fileName == null) {
+                String tempName = new String(part.getInputStream().readAllBytes());
+
+                if (!tempName.equals("undefined"))
+                    fileNames.add(tempName);
+            } else {
+                fileNames.add(fileName);
+            }
+        }
+
+        return fileNames;
+    }
+
+    public static boolean checkIsFileExist(List<String> existFileNames,
+                                           List<String> deleteFileNames,
+                                           List<String> addFileNameList) {
+        return existFileNames.size() - deleteFileNames.size() + addFileNameList.size() > 0;
+    }
+
+    public static void deleteFile(String deleteFileRealName) {
+        File file = new File(DIRECTORY, deleteFileRealName);
+        file.delete();
+    }
 }

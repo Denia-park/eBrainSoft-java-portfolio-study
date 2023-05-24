@@ -3,6 +3,7 @@ package ebrainsoft.week2.repository;
 import com.oreilly.servlet.MultipartRequest;
 import ebrainsoft.connection.MySqlConnection;
 import ebrainsoft.model.FileInfo;
+import ebrainsoft.week2.util.FileUtil;
 
 import java.io.File;
 import java.net.URLEncoder;
@@ -95,7 +96,7 @@ public class FileRepository {
      * @throws SQLException
      */
 
-    public static int deleteFileList(String boardId, String directoty, List<String> deleteFileNameList) throws SQLException {
+    public static int deleteFileList(String boardId, List<String> deleteFileNameList) throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
 
@@ -106,8 +107,7 @@ public class FileRepository {
             ps = con.prepareStatement(sql);
 
             for (String deleteFileRealName : deleteFileNameList) {
-                File file = new File(directoty, deleteFileRealName);
-                file.delete();
+                FileUtil.deleteFile(deleteFileRealName);
 
                 ps.setString(1, boardId);
                 ps.setString(2, deleteFileRealName);

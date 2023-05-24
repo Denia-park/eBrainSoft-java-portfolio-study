@@ -68,7 +68,7 @@
                                     <div class="file edit_file_div" id="edit_file_upload_${stat.index+1}">
                                         <i class="fa-solid fa-download"></i> ${file.fileName}
                                         <button class="edit_file_btn"
-                                                onclick="location.href='downloadAction.jsp?file=${file.urlEncodedFileRealName}'">
+                                                onclick="location.href='download?file=${file.urlEncodedFileRealName}'">
                                             Download
                                         </button>
                                         <button class="edit_file_btn"
@@ -140,7 +140,7 @@
 
         /** 게시판 - 목록 페이지 이동 */
         function doCancel() {
-            location.href = "index.jsp";
+            location.href = "index";
         }
 
         async function doVerify() {
@@ -176,6 +176,8 @@
 
             let formData = new FormData();
             formData.set('enctype', 'multipart/form-data');
+            formData.append('id', '${board.boardId}');
+            formData.append('pw', passwordFirst);
             formData.append('writer', writer);
             formData.append('title', title);
             formData.append('content', content);
@@ -191,11 +193,12 @@
                 formData.append('deleteNameList', name);
             }
 
-            const response = await fetch('doEditAction.jsp?id=' + '${board.boardId}' + '&pw=' + encode(btoa(passwordFirst)), {
-                    method: 'POST',
-                    body: formData
-                }
-            );
+            const response = await fetch('edit', {
+                        method: 'POST',
+                        body: formData
+                    }
+                )
+            ;
             if (response.redirected) {
                 window.location.href = response.url;
             }

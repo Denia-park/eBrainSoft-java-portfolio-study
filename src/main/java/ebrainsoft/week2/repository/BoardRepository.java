@@ -432,24 +432,33 @@ public class BoardRepository {
         }
     }
 
-//    public int updateBoard(MultipartRequest mr, String boardId, boolean isFileExist) throws SQLException {
-//        String writer = mr.getParameter("writer");
-//        String title = mr.getParameter("title");
-//        String content = mr.getParameter("content");
-//
-//        String sql = "UPDATE board SET writer=?, edit_datetime=?, title=?,content=?, file_exist=? where board_id = ?";
-//        PreparedStatement ps = con.prepareStatement(sql);
-//        ps.setString(1, writer);
-//        ps.setString(2, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")));
-//        ps.setString(3, title);
-//        ps.setString(4, content);
-//        ps.setBoolean(5, isFileExist);
-//        ps.setString(6, boardId);
-//
-//        int result = ps.executeUpdate();
-//
-//        ps.close();
-//
-//        return result;
-//    }
+    public static int updateBoard(HttpServletRequest request, String boardId, boolean isFileExist) throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try {
+            con = MySqlConnection.getConnection();
+
+            String writer = request.getParameter("writer");
+            String title = request.getParameter("title");
+            String content = request.getParameter("content");
+
+            String sql = "UPDATE board SET writer=?, edit_datetime=?, title=?,content=?, file_exist=? where board_id = ?";
+            ps = con.prepareStatement(sql);
+            ps.setString(1, writer);
+            ps.setString(2, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")));
+            ps.setString(3, title);
+            ps.setString(4, content);
+            ps.setBoolean(5, isFileExist);
+            ps.setString(6, boardId);
+
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (con != null) con.close();
+            if (ps != null) ps.close();
+        }
+
+    }
 }
