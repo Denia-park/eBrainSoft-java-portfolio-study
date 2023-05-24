@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,7 +43,10 @@ public class FrontController extends HttpServlet {
         String uri = req.getRequestURI();
         String method = req.getMethod();
         Service service = serviceMapping().get(uri);
-        log.info("uri [{}] = {}", method, uri);
+        String url = req.getRequestURL().toString();
+        List<String> values = new ArrayList<>();
+        req.getParameterNames().asIterator().forEachRemaining(values::add);
+        log.info("uri [{}] = {}, {}", method, url, values);
 
         if (service != null) {
             service.doService(req, resp);
