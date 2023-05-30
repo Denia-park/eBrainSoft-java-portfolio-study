@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ebrainsoft.week3.mapper.BoardMapper">
+    <select id="findAll" resultType="Board">
+        SELECT *
+        FROM board
+        WHERE reg_datetime BETWEEN #{startDayFilter} AND #{endDayFilter}
+        <if test="categoryFilter != 'all'">
+            AND category = #{categoryFilter}
+        </if>
+        <if test="!searchTextFilter.isEmpty()">
+            AND (title LIKE '%${searchTextFilter}%' OR writer LIKE '%${searchTextFilter}%' OR content LIKE
+            '%${searchTextFilter}%')
+        </if>
+        <if test="pageSizeLimit != null">
+            ORDER BY reg_datetime DESC LIMIT ${pageSizeLimit} OFFSET ${pageOffset}
+        </if>
+    </select>
+</mapper>
