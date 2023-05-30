@@ -1,0 +1,342 @@
+html {
+    margin: 30px 100px;
+}
+
+.filter {
+    height: 50px;
+    border: 1px solid;
+    margin: 30px 10px;
+    padding: 0px 50px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter_height {
+    height: 35px;
+}
+
+.search {
+    margin-left: 30px;
+}
+
+.button {
+    width: 75px;
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.align_center {
+    display: flex;
+    justify-content: center;
+}
+
+.align_left {
+    float: right;
+    margin-right: 10px;
+}
+
+.text_align_center {
+    text-align: center;
+}
+
+.page-item {
+    text-align: center;
+}
+
+.detail_info_box {
+    display: flex;
+    justify-content: space-between;
+
+    font-size: 20px;
+
+    margin-bottom: 10px;
+}
+
+.detail_title_box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    margin-bottom: 10px;
+}
+
+.detail_title_box #title {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.detail_content_box {
+    border: 1px solid black;
+    padding: 15px;
+    margin-bottom: 30px;
+}
+
+.detail_file_box {
+    margin-bottom: 30px;
+}
+
+.detail_comment_box {
+    background-color: lightgray;
+    padding: 15px;
+}
+
+.detail_comment_box #reg_date {
+    font-size: 12px
+}
+
+.caption {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 10px;
+}
+
+.post_table {
+    text-align: left;
+    vertical-align: center;
+
+    border-collapse: collapse;
+    border-top: 1px solid #c9c9c9;
+
+    width: 100%;
+}
+
+.post_table tbody th, .post_table tbody td {
+    font-size: 15px;
+
+    padding: 10px 15px;
+    color: #333;
+    background: #ececec;
+    border-bottom: 1px solid #c9c9c9;
+}
+
+.post_table tbody td {
+    background: #fafafa;
+}
+
+/* textbox_style */
+input.tbox01 {
+    width: 200px;
+    height: 26px;
+    line-height: 26px
+}
+
+td select {
+    width: 208px;
+    height: 32px;
+}
+
+/* textarea */
+textarea.textarea01 {
+    width: 500px;
+    height: 150px;
+    margin: 10px 0
+}
+
+.t_red {
+    color: #f55500
+}
+
+.file-upload input[type="file"] { /* 파일 필드 숨기기 */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.file-upload label {
+    display: inline-block;
+    padding: .5em .75em;
+    color: black;
+    font-size: inherit;
+    line-height: normal;
+    vertical-align: middle;
+    background-color: #fdfdfd;
+    cursor: pointer;
+    border: 1px solid #ebebeb;
+    border-bottom-color: #e2e2e2;
+    border-radius: .25em;
+}
+
+/* named upload */
+.file-upload .upload-name {
+    display: inline-block;
+    padding: .5em .75em; /* label의 패딩값과 일치 */
+    font-size: inherit;
+    font-family: inherit;
+    line-height: normal;
+    vertical-align: middle;
+    background-color: #f5f5f5;
+    border: 1px solid #ebebeb;
+    border-bottom-color: #e2e2e2;
+    border-radius: .25em;
+    -webkit-appearance: none; /* 네이티브 외형 감추기 */
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.title_link {
+    color: black;
+    text-decoration: none;
+}
+
+form.comment_input_box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+form.comment_input_box input {
+    height: 75px;
+    width: 93%;
+}
+
+form.comment_input_box button {
+    height: 75px;
+    width: 5%;
+}
+
+.detail_bot_button_box {
+    width: 20%;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.detail_bot_button_box button {
+    border: 1px solid;
+    height: 30px;
+    width: 90px;
+}
+
+.detail_bot_button_box #list_btn {
+    background-color: black;
+    color: whitesmoke;
+}
+
+.popup_bot_button_box {
+    width: 60%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.popup_bot_button_box button {
+    border: none;
+    height: 30px;
+    width: 90px;
+    margin: 10px auto;
+}
+
+.post_bot_button_box button {
+    border: none;
+    height: 30px;
+    width: 90px;
+}
+
+.post_bot_button_box {
+    margin-top: 30px;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.post_bot_button_box button#cancel_btn, .popup_bot_button_box button#cancel_btn {
+    background-color: lightgray;
+    color: black;
+    border: none;
+}
+
+.post_bot_button_box button.check_btn, .popup_bot_button_box button.check_btn {
+    background-color: black;
+    color: whitesmoke;
+}
+
+.edit_file_btn {
+    background-color: whitesmoke;
+    color: black;
+
+    border: 1px solid black;
+
+    margin: 10px 10px;
+}
+
+.edit_file_div {
+    margin: 10px 0;
+}
+
+.page_div a {
+    color: black;
+}
+
+#page_select {
+    color: orange;
+    font-weight: bold;
+}
+
+
+#search_box {
+    margin: 0px 10px;
+    width: 300px;
+}
+
+#reg_date_text {
+    margin-right: 20px;
+}
+
+#total_content_num {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#title_box_bot_line {
+    border: 1px solid black;
+    opacity: unset;
+}
+
+#comment_bot_line {
+    border: 1px dotted black;
+}
+
+#detail_edit_date {
+    margin-left: 20px;
+}
+
+#layer_bg {
+    position: absolute; /* 시작 지점을 버튼 위, 0픽셀부터 시작하려고 주는 것*/
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#popup {
+    position: absolute;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 15px;
+    width: 400px;
+    height: 150px;
+    background: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 7px 7px 5px rgba(0, 0, 0, 0.2); /*x y 번짐 색상*/
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
