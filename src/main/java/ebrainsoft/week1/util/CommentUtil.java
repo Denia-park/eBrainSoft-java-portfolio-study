@@ -22,7 +22,7 @@ public class CommentUtil {
                             replyId(rs.getLong("REPLY_ID")).
                             boardId(rs.getLong("BOARD_ID")).
                             content(rs.getString("CONTENT")).
-                            regDate(rs.getString("REG_DATETIME")).
+                            regDatetime(rs.getString("REG_DATETIME")).
                             build()
             );
         }

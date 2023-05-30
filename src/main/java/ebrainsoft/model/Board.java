@@ -10,8 +10,8 @@ import lombok.Getter;
 public class Board {
     Long boardId;
     String category;
-    String regDate;
-    String editDate;
+    String regDatetime;
+    String editDatetime;
     Integer views;
     String writer;
     String password;

@@ -127,8 +127,8 @@ public class BoardUtil {
         return Board.builder().
                 boardId(rs.getLong("BOARD_ID")).
                 category(rs.getString("CATEGORY")).
-                regDate(regDate).
-                editDate(editDate).
+                regDatetime(regDate).
+                editDatetime(editDate).
                 views(views).
                 writer(rs.getString("WRITER")).
                 password(rs.getString("PASSWORD")).

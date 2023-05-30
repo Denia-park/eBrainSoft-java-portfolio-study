@@ -10,6 +10,6 @@ import lombok.Getter;
 public class Comment {
     Long replyId;
     Long boardId;
-    String regDate;
+    String regDatetime;
     String content;
 }
