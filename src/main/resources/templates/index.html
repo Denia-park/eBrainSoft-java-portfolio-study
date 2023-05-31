@@ -42,8 +42,7 @@
             </div>
         </form>
 
-        <div id="total_content_num">
-            총 ${totalCount} 건
+        <div id="total_content_num" th:text="'총 ' + ${boardInfo.totalCount} + ' 건'">
         </div>
 
         <table class="table table-hover text_align_center">
@@ -59,7 +58,7 @@
             </tr>
             </thead>
             <tbody class="table-group-divider">
-            <tr th:each="board : ${boardList}">
+            <tr th:each="board : ${boardInfo.boardList}">
                 <th scope="row" th:text="${board.category}"></th>
                 <td><i class='fa-solid fa-paperclip' th:if="${board.fileExist}"></i></td>
                 <td><a class="title_link" th:href="@{detail(id=${board.boardId})}"
@@ -77,28 +76,27 @@
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                     <li class="page-item">
-                        <a aria-label="Previous" class="page-link" href="index?page=1">
+                        <a aria-label="Previous" class="page-link" th:href="@{'index?page=1'}">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <li class="page-item">
-                        <a aria-label="Previous" class="page-link" href="index?page=${prevPage}">
+                        <a aria-label="Previous" class="page-link" th:href="@{'index?page='+${boardInfo.prevPage}}">
                             <span aria-hidden="true"><</span>
                         </a>
                     </li>
-                    <!--                    <c:forEach var="num" begin="${pageLimitStart}" end="${pageLimitEnd}" step="1">-->
-                    <!--                        <li class="page-item">-->
-                    <!--                            <a class="page-link" <c:if test="${num == curPage}"> id="page_select"</c:if>-->
-                    <!--                               href="index?page=${num}">${num}</a>-->
-                    <!--                        </li>-->
-                    <!--                    </c:forEach>-->
+                    <li class="page-item" th:each="num,stat : ${#numbers.sequence(pageLimitStart,pageLimitEnd)}">
+                        <a class="page-link" th:href="@{'index?page=' + ${num}}"
+                           th:id="${num == curPage} ? 'page_select' "
+                           th:text="${num}"></a>
+                    </li>
                     <li class="page-item">
-                        <a aria-label="Next" class="page-link" href="index?page=${nextPage}">
+                        <a aria-label="Next" class="page-link" th:href="@{'index?page='+${boardInfo.nextPage}}">
                             <span aria-hidden="true">></span>
                         </a>
                     </li>
                     <li class="page-item">
-                        <a aria-label="Next" class="page-link" href="index?page=${totalPage}">
+                        <a aria-label="Next" class="page-link" th:href="@{'index?page='+${boardInfo.totalPage}}">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

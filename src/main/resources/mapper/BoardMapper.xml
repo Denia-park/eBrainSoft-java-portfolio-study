@@ -18,4 +18,17 @@
             ORDER BY reg_datetime DESC LIMIT ${pageSizeLimit} OFFSET ${pageOffset}
         </if>
     </select>
+
+    <select id="countAll" resultType="Integer">
+        SELECT COUNT(*)
+        FROM board
+        WHERE reg_datetime BETWEEN #{startDayFilter} AND #{endDayFilter}
+        <if test="categoryFilter != 'all'">
+            AND category = #{categoryFilter}
+        </if>
+        <if test="!searchTextFilter.isEmpty()">
+            AND (title LIKE '%${searchTextFilter}%' OR writer LIKE '%${searchTextFilter}%' OR content LIKE
+            '%${searchTextFilter}%')
+        </if>
+    </select>
 </mapper>

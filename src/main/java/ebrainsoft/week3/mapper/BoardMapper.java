@@ -9,4 +9,6 @@ import java.util.Map;
 @Mapper
 public interface BoardMapper {
     List<Board> findAll(Map<String, Object> map);
+
+    int countAll(Map<String, Object> map);
 }

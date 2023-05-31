@@ -20,7 +20,7 @@ public class IndexController {
     private final IndexService indexService;
 
     @GetMapping("/index")
-    public String getBoardList(HttpServletRequest request, Model model) throws Exception {
+    public String getBoardList(HttpServletRequest request, Model model) {
         FilterCondition fc = SearchUtil.updateFilterConditionIfSearchConditionExist(request);
 
         IndexServiceInfo indexServiceInfo = indexService.getIndexInfo(fc);
@@ -34,15 +34,12 @@ public class IndexController {
 
     private void modelUpdate(Model model, IndexServiceInfo indexServiceInfo, FilterCondition fc) {
         BoardInfo boardInfo = indexServiceInfo.getBoardInfo();
+
         model.addAttribute("categoryList", indexServiceInfo.getCategoryList());
         model.addAttribute("fc", fc);
-        model.addAttribute("boardList", boardInfo.getBoardList());
-        model.addAttribute("totalCount", boardInfo.getTotalCount());
+        model.addAttribute("boardInfo", boardInfo);
 
         model.addAttribute("curPage", boardInfo.getNeedPageNum());
-        model.addAttribute("totalPage", boardInfo.getTotalPage());
-        model.addAttribute("prevPage", boardInfo.getPrevPage());
-        model.addAttribute("nextPage", boardInfo.getNextPage());
 
         model.addAttribute("pageLimitStart", boardInfo.getPageLimitStart());
         model.addAttribute("pageLimitEnd", boardInfo.getPageLimitEnd(boardInfo.getPageLimitStart()));

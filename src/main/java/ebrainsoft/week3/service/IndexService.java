@@ -17,35 +17,32 @@ public class IndexService {
     private final CategoryMapper categoryMapper;
     private final BoardMapper boardMapper;
 
-    public IndexServiceInfo getIndexInfo(FilterCondition fc) throws Exception {
+    public IndexServiceInfo getIndexInfo(FilterCondition fc) {
         List<Category> categories = categoryMapper.findAll();
         List<String> categoryList = categories.stream().map(Category::getName).collect(Collectors.toList());
 
-        //TODO
-        //페이징 전체 개수 세기
-
-        int pageSizeLimit = BoardInfo.PAGE_SIZE_LIMIT;
         Map<String, Object> map = new HashMap<>();
+        updateMap(map, fc);
+
+        int searchedTotalCount = boardMapper.countAll(map);
+        List<Board> boardList = boardMapper.findAll(map);
+
+        int searchedTotalPage = getTotalPage(searchedTotalCount);
+        BoardInfo boardInfo = new BoardInfo(searchedTotalCount, searchedTotalPage, fc.getNeedPageNum(), boardList);
+
+        return new IndexServiceInfo(boardInfo, categoryList);
+    }
+
+    private void updateMap(Map<String, Object> map, FilterCondition fc) {
         map.put("startDayFilter", fc.getFilterStartTime());
         map.put("endDayFilter", fc.getFilterEndTime());
         map.put("categoryFilter", fc.getCategoryFilter());
         map.put("searchTextFilter", fc.getSearchTextFilter());
-        map.put("pageSizeLimit", pageSizeLimit);
-        map.put("pageOffset", (fc.getNeedPageNum() - 1) * pageSizeLimit);
+        map.put("pageSizeLimit", BoardInfo.PAGE_SIZE_LIMIT);
+        map.put("pageOffset", (fc.getNeedPageNum() - 1) * BoardInfo.PAGE_SIZE_LIMIT);
+    }
 
-        List<Board> boardList = boardMapper.findAll(map);
-
-        BoardInfo boardInfo = new BoardInfo(1, 1, 1, boardList);
-
-//        SearchedBoard searchedBoard = BoardRepository.findAllBoardWithPageNum(fc, BoardInfo.PAGE_SIZE_LIMIT);
-//
-//        int totalCount = searchedBoard.getTotalSearchedBoardNum();
-//        int totalPage = searchedBoard.getTotalSearchedBoardPageNum();
-//        int needPageNum = fc.getNeedPageNumComparedWithTotalPage(totalPage);
-//        List<Board> boardList = searchedBoard.getSearchedBoardList();
-//
-//        BoardInfo boardInfo = new BoardInfo(totalCount, totalPage, needPageNum, boardList);
-
-        return new IndexServiceInfo(boardInfo, categoryList);
+    private int getTotalPage(int totalCount) {
+        return Math.max(1, (int) Math.ceil((double) totalCount / BoardInfo.PAGE_SIZE_LIMIT));
     }
 }
